@@ -19,7 +19,7 @@ This C++ library offers a simple progress bar and spinner for console applicatio
 Clone this repository to your local machine using:
 
 ```bash
-git clone https://github.com/your-username/progress-indicator-library.git
+git clone https://github.com/your-username/progress-indicator-library.git```
 
 ### Usage
 
@@ -44,5 +44,10 @@ spinner.stop();```
 
 ### Building and Running
 
+#### GCC
 ```bash
 g++ -std=c++11 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp ./spinningload```
+
+#### MSVC
+```bash
+cl /EHsc /std:c++11 /MT spinningload.cpp /Fe:spinningload.exe```
