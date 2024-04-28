@@ -1,4 +1,4 @@
-# Lightweight Progress Indicator Library
+# Progress Spinner
 
 This C++ library offers a simple progress bar and spinner for console applications, providing a visual indicator of task progress. It is designed to be flexible and easy to use in various types of C++ projects.
 
