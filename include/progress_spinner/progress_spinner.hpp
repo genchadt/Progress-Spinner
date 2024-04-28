@@ -67,6 +67,7 @@ public:
     void complete() {
         updateProgress(100.0);
         std::cout << "✓ OK!" << std::endl;
+        showCursor(true);
     }
 
     double getCurrentPercentage() const {
