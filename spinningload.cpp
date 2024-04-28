@@ -18,39 +18,38 @@
 int main(int argc, char *argv[]) {
     SetConsoleOutputCP(CP_UTF8);
 
-    /*
     try {
         ProgressSpinner spinner;
         spinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate long-running operation
         spinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner dotSpinner({"◐", "◓", "◑", "◒"});
+        ProgressSpinner dotSpinner("Progress", {"◐", "◓", "◑", "◒"});
         dotSpinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         dotSpinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner barSpinner({"▉", "▊", "▋", "▌", "▍", "▎", "▏", "▕"});
+        ProgressSpinner barSpinner("Progress", {"▉", "▊", "▋", "▌", "▍", "▎", "▏", "▕"});
         barSpinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         barSpinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner boxSpinner({"┤", "┘", "┴", "└", "├", "┌", "┬", "┐"});
+        ProgressSpinner boxSpinner("Progress", {"┤", "┘", "┴", "└", "├", "┌", "┬", "┐"});
         boxSpinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         boxSpinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner meteorSpinner({"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"});
+        ProgressSpinner meteorSpinner("Progress", {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"});
         meteorSpinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         meteorSpinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner clockSpinner({"🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"});
+        ProgressSpinner clockSpinner("Progress", {"🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"});
         clockSpinner.start();  // Start the spinner in a separate thread
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         clockSpinner.stop();  // Ensure spinner stops before object destruction
 
-        ProgressSpinner lineSpinner({"|", "/", "—", "\\"});
+        ProgressSpinner lineSpinner("Progress", {"|", "/", "—", "\\"});
         lineSpinner.start();  // Start the custom spinner
         std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
         lineSpinner.stop();  // Stop the custom spinner
@@ -58,7 +57,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "Exception occurred: " << e.what() << std::endl;
         return -1;
     }
-    */ 
 
     try {
         ProgressBar progressBar("Loading: ");
