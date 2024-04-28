@@ -19,13 +19,15 @@ This C++ library offers a simple progress bar and spinner for console applicatio
 Clone this repository to your local machine using:
 
 ```bash
-git clone https://github.com/your-username/progress-indicator-library.git```
+git clone https://github.com/your-username/progress-indicator-library.git
+```
 
 ### Usage
 
-Include the library in your project and create instances as needed.
+Include the `progress_spinner.hpp` library in your project and create instances as needed.
 
-ProgressBar Example:
+#### ProgressBar Example
+
 ```cpp
 // Update the progress bar to 50%
 ProgressBar progressBar("Loading: ");
@@ -33,21 +35,28 @@ progressBar.updateProgress(50.0);
 progressBar.complete(); // Can also use progressBar.updateProgress(100.0); which calls complete()
 
 // Update the progress bar additively until 100% is reached
-ProgressBar.addProgress(10.0); // Adds 10% to current progress.```
+ProgressBar.addProgress(10.0); // Adds 10% to current progress.
+```
 
-ProgressSpinner Example:
+#### ProgressSpinner Example
+
 ```cpp
 ProgressSpinner spinner("Processing");
 spinner.start();
 // Perform tasks...
-spinner.stop();```
+spinner.stop();
+```
 
 ### Building and Running
 
 #### GCC
+
 ```bash
-g++ -std=c++11 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp ./spinningload```
+g++ -std=c++11 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp ./spinningload
+```
 
 #### MSVC
+
 ```bash
-cl /EHsc /std:c++11 /MT spinningload.cpp /Fe:spinningload.exe```
+cl /EHsc /std:c++11 /MT spinningload.cpp /Fe:spinningload.exe
+```
