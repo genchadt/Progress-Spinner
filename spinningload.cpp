@@ -13,7 +13,7 @@
 #include <chrono>
 #include <thread>
 #include <windows.h>
-#include "./spinning_progress.hpp"
+#include "include/progress_spinner/progress_spinner.hpp"
 
 int main(int argc, char *argv[]) {
     SetConsoleOutputCP(CP_UTF8);
