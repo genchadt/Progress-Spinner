@@ -113,8 +113,8 @@ public:
      * @throws None
      */
     explicit ProgressSpinner(   const std::string& label = "Progress",
-                                const std::string& padding = " ",
-                                const std::vector<std::string>& spinner_chars = {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"})
+                                const std::vector<std::string>& spinner_chars = {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
+                                const std::string& padding = " ")
         : spinner(spinner_chars),               // Store the custom spinner characters
           text(label),                          // Store the custom label
           num_phases(spinner_chars.size()),     // Store the number of spinner phases
