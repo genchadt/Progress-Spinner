@@ -1,1 +1,39 @@
 .vscode/
+
+# Auth keys
+*.key
+*.pem
+*.cer
+*.pfx
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Other file types
+*.class
+*.o
+*.lo
+*.la
+*.bin
+*.out
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.zip
+*.rar
+*.gz
+*.tar
+*.7z
+*.iso
+*.dmg
+*.jar
+*.war
+*.ear
+*.apk
+*.ipa
+*.app
