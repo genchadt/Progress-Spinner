@@ -5,9 +5,21 @@
 
 int main() {
 
-    std::cout<< "Progress Bar Demo:" << std::endl;
+    std::cout << "HProgressBar Demo:\n";
+
+    HProgressBar hp_bar;
+
+    // Simulate a task that gradually completes, completing once a value of 100 is reached
+    hp_bar.start();
+    for (int i = 0; i <= 100; i += 5) {
+        hp_bar.updateProgress(i);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Simulate time-consuming operations
+    }
+    hp_bar.stop();
+
+    std::cout << "\nVProgressBar Demo:\n";
     // Construct a Progress Bar with default labels and progress characters
-    ProgressBar pBar;
+    VProgressBar pBar;
     // Simulate a task that gradually completes, completing once a value of 100 is reached
     
     double tick = pBar.getTick();
@@ -17,11 +29,11 @@ int main() {
             pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
             continue;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
     }
 
     // Construct a Progress Bar with custom labels and progress characters
-    ProgressBar custom_pBar("Working: ", " ✓ OK!", { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" });
+    VProgressBar custom_pBar("Working: ", " ✓ OK!", { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" });
 
     tick = custom_pBar.getTick();
     for (double  i = 0.0; i <= 100.0; i += tick) {
@@ -29,7 +41,7 @@ int main() {
         if (i >= 40.0) {
             custom_pBar.updateText("Getting close: ");  // Update the progress text mid-operation
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
     }
 
     std::cout << "\nProgress Spinner Demo:\n";

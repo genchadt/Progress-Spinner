@@ -70,18 +70,18 @@ protected:
 };
 
 /**
- * @class ProgressBar
+ * @class VProgressBar
  * @brief Class for displaying a progress bar.
  * @details This class provides a visual representation of progress through a single-character vertically-filling bar.
  */
-class ProgressBar : public ProgressIndicator {
+class VProgressBar : public ProgressIndicator {
 public:
-    ProgressBar(const std::string& progress_label = "Progress: ",
+    VProgressBar(const std::string& progress_label = "Progress: ",
                 const std::string& completed_label = " ✓ OK!",
                 const std::vector<std::string>& char_frames = {" ", "▂", "▃", "▄", "▅", "▆"})
     : ProgressIndicator(progress_label, completed_label), chars(char_frames), current_percentage(0.0) {
         if (chars.empty()) {
-            throw std::invalid_argument("ProgressBar chars cannot be empty");
+            throw std::invalid_argument("VProgressBar chars cannot be empty");
         }
         tick = 100.0 / (chars.size() - 1);  
         SetConsoleOutputCP(CP_UTF8);
@@ -133,6 +133,66 @@ private:
         std::cout << chars[index] << std::flush; // Display the current character
     }
 };
+
+/**
+ * @class HProgressBar
+ * @brief Class for displaying a horizontal progress bar using block characters.
+ * @details This class visually represents progress through a customizable horizontal bar made up of block characters.
+ */
+class HProgressBar : public ProgressIndicator {
+public:
+    HProgressBar(const std::string& progress_label = "Progress: ",
+                 const std::string& completed_label = " ✓ OK!",
+                 int total_segments = 30,
+                 const std::string& empty_char = "░",
+                 const std::string& filled_char = "█")
+    : ProgressIndicator(progress_label, completed_label),
+      total_segments(total_segments),
+      empty_char(empty_char),
+      filled_char(filled_char),
+      current_segments(0) {
+        SetConsoleOutputCP(CP_UTF8);
+        showCursor(false);
+    }
+
+    void start() override {
+        updateProgress(0); // Initialize progress bar
+    }
+
+    void stop() override {
+        std::lock_guard<std::mutex> lock(mutex);
+        current_segments = total_segments; // Ensure bar is full
+        redraw(true); // Redraw one last time with full progress
+        std::cout << "\r\033[K"; // Clear any remaining characters and ensure the line is completely clean
+        std::cout << progress_label << completed_label << std::endl;
+        showCursor(true);
+    }
+
+    void updateProgress(double new_percentage) {
+        std::lock_guard<std::mutex> lock(mutex);
+        current_segments = static_cast<int>(std::round(new_percentage / 100 * total_segments));
+        redraw(false);
+    }
+
+private:
+    int total_segments;
+    int current_segments;
+    std::string empty_char, filled_char;
+
+    void redraw(bool isFinal = false) {
+        std::cout << "\r\033[K" << progress_label;
+        for (int i = 0; i < current_segments; ++i) {
+            std::cout << filled_char;
+        }
+        for (int i = current_segments; i < total_segments; ++i) {
+            std::cout << empty_char;
+        }
+        if (!isFinal) {
+            std::cout << std::flush;
+        }
+    }
+};
+
 /**
  * @class ProgressSpinner
  * @brief Class for displaying a spinning character as a progress indicator.
