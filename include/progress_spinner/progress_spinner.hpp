@@ -79,12 +79,12 @@ public:
     ProgressBar(const std::string& progress_label = "Progress: ",
                 const std::string& completed_label = " ✓ OK!",
                 const std::vector<std::string>& char_frames = {" ", "▂", "▃", "▄", "▅", "▆"})
-    : ProgressIndicator(progress_label, completed_label), chars(char_frames) {
-        SetConsoleOutputCP(CP_UTF8);
+    : ProgressIndicator(progress_label, completed_label), chars(char_frames), current_percentage(0.0) {
         if (chars.empty()) {
             throw std::invalid_argument("ProgressBar chars cannot be empty");
         }
-        tick = 100.0 / (chars.size() - 1);  // Adjusted to ensure coverage
+        tick = 100.0 / (chars.size() - 1);  
+        SetConsoleOutputCP(CP_UTF8);
         showCursor(false);
         redraw();  // Initial draw
     }
@@ -92,18 +92,18 @@ public:
     void start() override {}
 
     void stop() override {
+        std::cout << "\r\033[K" << progress_label << completed_label << std::endl;
         std::cout << "DEBUG: Stopping progress indicator at stop()..." << std::endl;
-        std::cout << progress_label << completed_label << std::endl;
         showCursor(true);
     }
 
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
-        current_percentage = std::min(new_percentage, 100.0); // Ensure we cap at 100%
-        redraw(); // Redraw the progress bar with the updated percentage
+        current_percentage = std::min(new_percentage, 100.0);
+        redraw();
         if (current_percentage >= 100.0) {
             std::cout << "DEBUG: Progress indicator reached 100%!" << std::endl;
-            stop(); // Automatically stop when 100% is reached
+            stop();
         }
     }
 
@@ -119,11 +119,10 @@ private:
     void redraw() {
         std::cout << "\r\033[K" << progress_label; // Clear the line
         size_t index = static_cast<size_t>((chars.size() - 1) * (current_percentage / 100.0));
-        index = std::min(index, chars.size() - 1); // Ensure index does not go out of range
-        std::cout << chars[index] << std::flush; // Update the progress bar with current state
+        index = std::min(index, chars.size() - 1); // Ensure index does not exceed bounds
+        std::cout << chars[index] << std::flush; // Display the current character
     }
 };
-
 /**
  * @class ProgressSpinner
  * @brief Class for displaying a spinning character as a progress indicator.
