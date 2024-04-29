@@ -44,7 +44,7 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
     }
 
-    std::cout << "\nProgress Spinner Demo:\n";
+    std::cout << "\nProgressSpinner Demo:\n";
 
     // Construct a Progress Spinner with default labels and progress characters
     ProgressSpinner spinner;
