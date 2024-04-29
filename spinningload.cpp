@@ -4,6 +4,8 @@
 #include <thread>  // Required for std::this_thread::sleep_for
 
 int main() {
+
+    std::cout<< "Progress Bar Demo:" << std::endl;
     // Construct a Progress Bar with default labels and progress characters
     ProgressBar pBar;
     // Simulate a task that gradually completes, completing once a value of 100 is reached
@@ -11,7 +13,7 @@ int main() {
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
-        if (i == 50) {
+        if (i >= 50) {
             pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
             continue;
         }
@@ -24,13 +26,13 @@ int main() {
     tick = custom_pBar.getTick();
     for (double  i = 0.0; i <= 100.0; i += tick) {
         custom_pBar.updateProgress(i);  // Update progress
-        if (i >= 50.0) {
+        if (i >= 40.0) {
             custom_pBar.updateText("Getting close: ");  // Update the progress text mid-operation
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
     }
 
-    std::cout << "\nNow starting the spinner:\n";
+    std::cout << "\nProgress Spinner Demo:\n";
 
     // Construct a Progress Spinner with default labels and progress characters
     ProgressSpinner spinner;
