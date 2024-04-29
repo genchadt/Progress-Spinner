@@ -9,7 +9,7 @@ int main() {
     // Simulate a task that gradually completes, completing once a value of 100 is reached
     
     double tick = pBar.getTick();
-    for (unsigned short i = 0; i <= 100; i += tick) {
+    for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
         if (i == 50) {
             pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
@@ -22,26 +22,15 @@ int main() {
     ProgressBar custom_pBar("Working: ", " ✓ OK!", { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" });
 
     tick = custom_pBar.getTick();
-    for (double i = 0.0; i <= 100.0; i += tick) {
+    for (double  i = 0.0; i <= 100.0; i += tick) {
         custom_pBar.updateProgress(i);  // Update progress
-        if (i == 50) {
-            custom_pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
+        if (i >= 50.0) {
+            custom_pBar.updateText("Getting close: ");  // Update the progress text mid-operation
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
     }
 
     std::cout << "\nNow starting the spinner:\n";
-
-    ProgressBar spinner_pBar("Working: ", " ✓ OK!", { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" });
-    
-    tick = spinner_pBar.getTick();
-    for (unsigned short i = 0; i <= 100; i += tick) {
-        spinner_pBar.updateProgress(i);  // Update progress
-        if (i == 50) {
-            spinner_pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
-    }
 
     // Construct a Progress Spinner with default labels and progress characters
     ProgressSpinner spinner;
