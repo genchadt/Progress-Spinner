@@ -1,86 +1,68 @@
-//                                                                        
-//             /           /           /              |                   
-//   ___  ___    ___  ___    ___  ___ (  ___  ___  ___|     ___  ___  ___ 
-//  |___ |   )| |   )|   )| |   )|   )| |   )|   )|   )    |    |   )|   )
-//   __/ |__/ | |  / |  / | |  / |__/ | |__/ |__/||__/     |__  |__/ |__/ 
-//       |                       __/                   -        |    |    
-//
-// A quick test of spinning progress indicator library for C++.
-// Developed by Chad with assistance from:
-//     - ChatGPT versions 3.5 and 4
-
+#include "include/progress_spinner/progress_spinner.hpp"  // Include your custom header file
 #include <iostream>
-#include <chrono>
-#include <thread>
-#include <windows.h>
-#include "include/progress_spinner/progress_spinner.hpp"
+#include <vector>
+#include <thread>  // Required for std::this_thread::sleep_for
 
-int main(int argc, char *argv[]) {
-    SetConsoleOutputCP(CP_UTF8);
-
-    try {
-        ProgressSpinner spinner;
-        spinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate long-running operation
-        spinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner dotSpinner("Progress", {"◐", "◓", "◑", "◒"});
-        dotSpinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        dotSpinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner barSpinner("Progress", {"▉", "▊", "▋", "▌", "▍", "▎", "▏", "▕"});
-        barSpinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        barSpinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner boxSpinner("Progress", {"┤", "┘", "┴", "└", "├", "┌", "┬", "┐"});
-        boxSpinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        boxSpinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner meteorSpinner("Progress", {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"});
-        meteorSpinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        meteorSpinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner clockSpinner("Progress", {"🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"});
-        clockSpinner.start();  // Start the spinner in a separate thread
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        clockSpinner.stop();  // Ensure spinner stops before object destruction
-
-        ProgressSpinner lineSpinner("Progress", {"|", "/", "—", "\\"});
-        lineSpinner.start();  // Start the custom spinner
-        std::this_thread::sleep_for(std::chrono::seconds(5));  // Simulate another operation
-        lineSpinner.stop();  // Stop the custom spinner
-    } catch (const std::exception& e) {
-        std::cerr << "Exception occurred: " << e.what() << std::endl;
-        return -1;
+int main() {
+    // Construct a Progress Bar with default labels and progress characters
+    ProgressBar pBar;
+    // Simulate a task that gradually completes, completing once a value of 100 is reached
+    
+    double tick = pBar.getTick();
+    for (unsigned short i = 0; i <= 100; i += tick) {
+        pBar.updateProgress(i);  // Update progress
+        if (i == 50) {
+            pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
+            continue;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
     }
 
-    try {
-        ProgressBar progressBar("Loading: ");
-        ProgressBar progressBar2;
-        ProgressBar progressBar3;
+    // Construct a Progress Bar with custom labels and progress characters
+    ProgressBar custom_pBar("Working: ", " ✓ OK!", { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" });
 
-        // Simulate some work and update progress in percentages
-        while (progressBar.getCurrentPercentage() < 100.0) {
-            progressBar.addProgress(20);  // Increment progress by 12.5%
-            std::this_thread::sleep_for(std::chrono::seconds(1));  // Simulate some processing time
+    tick = custom_pBar.getTick();
+    for (double i = 0.0; i <= 100.0; i += tick) {
+        custom_pBar.updateProgress(i);  // Update progress
+        if (i == 50) {
+            custom_pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
         }
-        progressBar.complete();  // Ensure the progress bar is complete
-
-        while (progressBar2.getCurrentPercentage() < 100.0) {
-            progressBar2.addProgress(20);  // Increment progress by 12.5%
-            std::this_thread::sleep_for(std::chrono::seconds(1));  // Simulate some processing time
-        }
-        progressBar2.complete();  // Ensure the progress bar is complete
-
-        return 0;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception occurred: " << e.what() << std::endl;
-        return -1;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
     }
+
+    std::cout << "\nNow starting the spinner:\n";
+
+    ProgressBar spinner_pBar("Working: ", " ✓ OK!", { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" });
+    
+    tick = spinner_pBar.getTick();
+    for (unsigned short i = 0; i <= 100; i += tick) {
+        spinner_pBar.updateProgress(i);  // Update progress
+        if (i == 50) {
+            spinner_pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));  // Wait to simulate work
+    }
+
+    // Construct a Progress Spinner with default labels and progress characters
+    ProgressSpinner spinner;
+
+    spinner.start();
+    for (unsigned short i = 0; i < 10; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    spinner.stop();
+
+    // Construct a Progress Spinner with custom labels and progress characters
+    ProgressSpinner custom_spinner("Working: ", " ✓ OK!", { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" });
+
+    custom_spinner.start();
+    for (unsigned short i = 0; i < 10; ++i) {
+        if (i == 5) {
+            custom_spinner.updateText("Halfway there: ");  // Update the progress label text mid-operation
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    custom_spinner.stop();
 
     return 0;
 }

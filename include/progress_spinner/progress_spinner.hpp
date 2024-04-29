@@ -1,194 +1,183 @@
-//      ____                                          _____       _                      
-//     / __ \_________  ____ _________  __________   / ___/____  (_)___  ____  ___  _____
-//    / /_/ / ___/ __ \/ __ `/ ___/ _ \/ ___/ ___/   \__ \/ __ \/ / __ \/ __ \/ _ \/ ___/
-//   / ____/ /  / /_/ / /_/ / /  /  __(__  |__  )   ___/ / /_/ / / / / / / / /  __/ /    
-//  /_/   /_/   \____/\__, /_/   \___/____/____/   /____/ .___/_/_/ /_/_/ /_/\___/_/     
-//                   /____/                            /_/                               
-//
-// Lightweight progress indicator library for C++
-// Developed by Chad with assistance from:
-//     - ChatGPT versions 3.5 (Codeium) and 4
+// Include guard to prevent multiple inclusions
+#ifndef PROGRESS_INDICATOR_HPP
+#define PROGRESS_INDICATOR_HPP
 
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include <vector>
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-void showCursor(bool showFlag);
+/** 
+ * @brief Toggle the visibility of the console cursor.
+ * @param flag True to show the cursor, false to hide it.
+ */
+void showCursor(bool flag);
 
-class ProgressBar {
+/**
+ * @class ProgressIndicator
+ * @brief Abstract base class for displaying progress indicators.
+ */
+class ProgressIndicator {
 public:
     /**
-     * Constructor for the ProgressBar class. Initializes a progress bar with the given label and progress characters.
-     *
-     * @param label the label for the progress bar (default: "Progress: ")
-     * @param progress_chars the characters to be used for the progress bar (default: {" ", "▂", "▃", "▄", "▅", "▆"})
-     *
-     * @throws std::invalid_argument if progress_chars is empty
+     * @brief Constructor for ProgressIndicator.
+     * @param progress_label Initial text displayed as the progress label.
+     * @param completed_label Text displayed upon completion.
      */
-    explicit ProgressBar(   const std::string& label = "Progress: ",
-                            const std::vector<std::string>& progress_chars = { " ", "▂", "▃", "▄", "▅", "▆" })
-        : chars(progress_chars),        // Characters for the progress bar
-          text(label),                  // Store the custom label
-          current_percentage(0) {       // Store the current percentage value
-        if (chars.empty()) {
-            throw std::invalid_argument("ProgressBar: progress_chars cannot be empty");
-        }
-        std::cout << text << std::flush;  // Initialize the progress bar frame
-    }
+    ProgressIndicator(const std::string& progress_label = "Progress: ",
+                      const std::string& completed_label = " ✓ OK!")
+    : progress_label(progress_label),
+      completed_label(completed_label) {}
+
+    virtual ~ProgressIndicator() = default;
+
+    virtual void start() = 0;
+    virtual void stop() = 0;
 
     /**
-     * Updates the progress of the ProgressBar.
-     *
-     * @param new_percentage the new percentage value for the ProgressBar
-     *
-     * @throws std::out_of_range if the new_percentage is not in the range 0-100% [0.0, 100.0]
+     * @brief Updates the text of the progress label.
+     * @param new_text New text to set as the progress label.
      */
-    void updateProgress(double new_percentage) {
-        showCursor(false);
-        if (new_percentage < 0.0 || new_percentage > 100.0) {
-            throw std::out_of_range("ProgressBar: new_percentage must be in the range [0.0, 100.0]");
-        }
-        current_percentage = new_percentage;
-        redraw();
-    }
-    
-    void addProgress(double increment) {
-        updateProgress(current_percentage + increment);
+    virtual void updateText(const std::string& new_text) {
+        std::lock_guard<std::mutex> lock(mutex);
+        progress_label = new_text;
     }
 
-    void complete() {
-        updateProgress(100.0);
-        std::cout << "✓ OK!" << std::endl;
-        showCursor(true);
-    }
+protected:
+    std::string progress_label, completed_label;
+    std::mutex mutex;
 
-    double getCurrentPercentage() const {
-        return current_percentage;
-    }
-
-private:
-    const std::vector<std::string> chars;   // Characters for the progress bar
-    const std::string text;                 // Store the custom label
-    double current_percentage;               // Store the current percentage value
-
-    /**
-     * Redraws the progress bar with the updated percentage value.
-     *
-     * This function calculates the index of the character to display based on the current percentage value.
-     * It then uses the index to select the appropriate character from the `chars` vector.
-     * The selected character and any remaining characters are then printed to the console.
-     *
-     * @throws std::out_of_range if the calculated index is out of range of the `chars` vector size
-     */
-    void redraw() {
-        int index = static_cast<int>(std::round((chars.size() - 1) * (current_percentage / 100.0)));
-        if (index < 0 || index >= static_cast<int>(chars.size())) {
-            throw std::out_of_range("ProgressBar: index out of range");
-        }
-        std::cout << "\r"
-                  << "\033[2K"
-                  << text << chars[index] << ' ' << std::string(chars.size() - index - 1, ' ') 
-                  << std::flush;
+    static void showCursor(bool showFlag) {
+        #ifdef _WIN32
+        HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_CURSOR_INFO cursorInfo;
+        GetConsoleCursorInfo(out, &cursorInfo);
+        cursorInfo.bVisible = showFlag; // Set cursor visibility
+        SetConsoleCursorInfo(out, &cursorInfo);
+        #else
+        std::cout << (showFlag ? "\033[?25h" : "\033[?25l");
+        #endif
     }
 };
 
-class ProgressSpinner {
+/**
+ * @class ProgressBar
+ * @brief Class for displaying a progress bar.
+ * @details This class provides a visual representation of progress through a single-character vertically-filling bar.
+ */
+class ProgressBar : public ProgressIndicator {
 public:
-    /**
-     * Constructor for the ProgressSpinner class.
-     *
-     * @param label The label for the spinner (default: "Progress")
-     * @param padding The padding for the spinner (default is a single whitespace)
-     * @param spinner_chars The characters to be used for the spinner (default:
-     *        {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"})
-     *
-     * @throws None
-     */
-    explicit ProgressSpinner(   const std::string& label = "Progress",
-                                const std::vector<std::string>& spinner_chars = {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
-                                const std::string& padding = " ")
-        : spinner(spinner_chars),               // Store the custom spinner characters
-          text(label),                          // Store the custom label
-          num_phases(spinner_chars.size()),     // Store the number of spinner phases
-          keep_alive(true),                     // Initialize keep_alive flag to true
-          padding(padding) {                    // Store the custom padding
+    ProgressBar(const std::string& progress_label = "Progress: ",
+                const std::string& completed_label = " ✓ OK!",
+                const std::vector<std::string>& char_frames = {" ", "▂", "▃", "▄", "▅", "▆"})
+    : ProgressIndicator(progress_label, completed_label), chars(char_frames) {
+        SetConsoleOutputCP(CP_UTF8);
+        if (chars.empty()) {
+            throw std::invalid_argument("ProgressBar chars cannot be empty");
+        }
+        tick = 100.0 / (chars.size() - 1);  // Adjusted to ensure coverage
+        showCursor(false);
+        redraw();  // Initial draw
     }
 
-        /**
-         * Starts the progress spinner.
-         *
-         * This function initializes the progress spinner by hiding the cursor and
-         * creating a new thread to run the spinner animation.
-         *
-         * @throws None
-         */
-    void start() {
+    void start() override {}
+
+    void stop() override {
+        std::cout << "DEBUG: Stopping progress indicator at stop()..." << std::endl;
+        std::cout << progress_label << completed_label << std::endl;
+        showCursor(true);
+    }
+
+    void updateProgress(double new_percentage) {
+        std::lock_guard<std::mutex> lock(mutex);
+        current_percentage = std::min(new_percentage, 100.0); // Ensure we cap at 100%
+        redraw(); // Redraw the progress bar with the updated percentage
+        if (current_percentage >= 100.0) {
+            std::cout << "DEBUG: Progress indicator reached 100%!" << std::endl;
+            stop(); // Automatically stop when 100% is reached
+        }
+    }
+
+    double getCurrentPercentage() const { return current_percentage; }
+    size_t getCharCount() const { return chars.size(); }
+    double getTick() const { return tick; }
+
+private:
+    std::vector<std::string> chars;
+    double current_percentage;
+    double tick;
+
+    void redraw() {
+        std::cout << "\r\033[K" << progress_label; // Clear the line
+        size_t index = static_cast<size_t>((chars.size() - 1) * (current_percentage / 100.0));
+        index = std::min(index, chars.size() - 1); // Ensure index does not go out of range
+        std::cout << chars[index] << std::flush; // Update the progress bar with current state
+    }
+};
+
+/**
+ * @class ProgressSpinner
+ * @brief Class for displaying a spinning character as a progress indicator.
+ * @details This class visually represents ongoing processes through a cyclic animation of characters.
+ */
+class ProgressSpinner : public ProgressIndicator {
+public:
+    /**
+     * @brief Constructor for ProgressSpinner.
+     * @param progress_label Initial text displayed as the progress label.
+     * @param completed_label Text displayed upon completion.
+     * @param char_frames Characters used to represent the spinner.
+     */
+    ProgressSpinner(const std::string& progress_label = "Progress: ",
+                    const std::string& completed_label = " ✓ OK!",
+                    const std::vector<std::string>& char_frames = {"|", "/", "-", "\\"})
+    : ProgressIndicator(progress_label),
+      chars(char_frames),
+      keep_alive(true) {
+        SetConsoleOutputCP(CP_UTF8);
+        if (chars.empty()) {
+            throw std::invalid_argument("Spinner chars cannot be empty");
+        }
         showCursor(false);
+    }
+
+    void start() override {
         spinner_thread = std::thread(&ProgressSpinner::run, this);
     }
 
-    /**
-     * Stops the progress spinner.
-     *
-     * @throws None
-     */
-    void stop() {
+    void stop() override {
         keep_alive = false;
         if (spinner_thread.joinable()) {
             spinner_thread.join();
         }
+        std::cout << "\r" << progress_label << completed_label << std::endl;
         showCursor(true);
-        // Clear only the spinner part, not the label text
-        std::cout << "\r" << text << ":" << std::string(padding.length(), ' ') << "✓ OK!" << std::endl;
     }
 
-    // Method to update the text dynamically
-    void updateText(const std::string& new_text) {
-        text = new_text;
-    }
+    size_t getCharCount() const { return chars.size(); }
 
 private:
-    std::vector<std::string> spinner;
-    std::string text;  // Text displayed next to the spinner
-    std::string padding;  // Padding between the text and the spinner
-    size_t num_phases;
+    std::vector<std::string> chars;
     std::atomic<bool> keep_alive;
     std::thread spinner_thread;
 
     void run() {
+        size_t index = 0;
         while (keep_alive) {
-            for (size_t i = 0; i < num_phases && keep_alive; i++) {
-                std::cout << "\r" << text << ":" << padding << spinner[i] << std::flush;
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
+            std::cout << "\r" << progress_label << chars[index] << std::flush;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            index = (index + 1) % chars.size();
         }
     }
 };
 
-#ifdef _WIN32
-void showCursor(bool showFlag) {
-    if (showFlag) {
-        std::cout<<"\033[?25h";
-    } else {
-        std::cout<<"\033[?25l";
-    }
-}
-#else
-void showCursor(bool showFlag) {
-    if (showFlag) {
-        HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-        CONSOLE_CURSOR_INFO cursorInfo;
-        GetConsoleCursorInfo(out, &cursorInfo);
-        cursorInfo.bVisible = true;
-        SetConsoleCursorInfo(out, &cursorInfo);
-    }
-}
-#endif
+#endif // PROGRESS_INDICATOR_HPP
