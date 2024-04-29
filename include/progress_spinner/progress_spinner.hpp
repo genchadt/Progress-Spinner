@@ -99,7 +99,14 @@ public:
 
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
-        if (new_percentage >= 100.0 - tick) new_percentage = 100.0; // Automatically set to 100 if close enough
+        if (new_percentage >= 100.0 - tick) {
+            new_percentage = 100.0; // Automatically set to 100 if close enough
+            if (!completed) {
+                completed = true; // Mark completion to prevent multiple messages
+            } else {
+                return; // Skip updating if already completed
+            }
+        }
         current_percentage = new_percentage;
         redraw();
         if (current_percentage >= 100.0) {
@@ -114,6 +121,7 @@ public:
     double getTick() const { return tick; }
 
 private:
+    bool completed = false;
     std::vector<std::string> chars;
     double current_percentage;
     double tick;
