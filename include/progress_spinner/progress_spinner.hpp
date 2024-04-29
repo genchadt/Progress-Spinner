@@ -93,17 +93,19 @@ public:
 
     void stop() override {
         std::cout << "\r\033[K" << progress_label << completed_label << std::endl;
-        std::cout << "DEBUG: Stopping progress indicator at stop()..." << std::endl;
+        //std::cout << "DEBUG: Stopping progress indicator at stop()..." << std::endl;
         showCursor(true);
     }
 
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
-        current_percentage = std::min(new_percentage, 100.0);
+        if (new_percentage >= 100.0 - tick) new_percentage = 100.0; // Automatically set to 100 if close enough
+        current_percentage = new_percentage;
         redraw();
         if (current_percentage >= 100.0) {
-            std::cout << "DEBUG: Progress indicator reached 100%!" << std::endl;
-            stop();
+            std::cout << "\r\033[K" << progress_label << completed_label << std::endl;
+            //std::cout << "DEBUG: Progress indicator reached 100%!" << std::endl;
+            showCursor(true);
         }
     }
 
