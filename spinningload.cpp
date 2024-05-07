@@ -67,5 +67,29 @@ int main() {
     }
     custom_spinner.stop();
 
+    // Construct progress spinner with emojis
+    ProgressSpinner custom_spinner2("Working: ", " ✓ OK!", { "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" });
+
+    custom_spinner2.start();
+    for (unsigned short i = 0; i < 10; ++i) {
+        if (i == 5) {
+            custom_spinner2.updateText("Halfway there: ");  // Update the progress label text mid-operation
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    custom_spinner2.stop();
+
+    // Another example using different emoji chars
+    ProgressSpinner custom_spinner3("Working: ", " ✓ OK!", { "🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚" });
+
+    custom_spinner3.start();
+    for (unsigned short i = 0; i < 10; ++i) {
+        if (i == 5) {
+            custom_spinner3.updateText("Halfway there: ");  // Update the progress label text mid-operation
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    custom_spinner3.stop();
+
     return 0;
 }
