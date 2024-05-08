@@ -4,7 +4,6 @@
 #include <thread>  // Required for std::this_thread::sleep_for
 
 int main() {
-
     std::cout << "HProgressBar Demo:\n";
 
     HProgressBar hp_bar;
@@ -25,10 +24,10 @@ int main() {
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
-        if (i >= 50) {
-            pBar.updateText("Halfway there: ");  // Update the progress text mid-operation
+        /* if (i >= 40) {
+            pBar.updateText("About halfway there: ");  // Update the progress text mid-operation
             continue;
-        }
+        } */
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
     }
 
@@ -90,6 +89,6 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     custom_spinner3.stop();
-
+    
     return 0;
 }

@@ -76,13 +76,13 @@ protected:
 class VProgressBar : public ProgressIndicator {
 public:
     VProgressBar(const std::string& progress_label = "Progress: ",
-                const std::string& completed_label = " ✓ OK!",
-                const std::vector<std::string>& char_frames = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇"})
+                 const std::string& completed_label = " ✓ OK!",
+                 const std::vector<std::string>& char_frames = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"})
     : ProgressIndicator(progress_label, completed_label), chars(char_frames), current_percentage(0.0) {
         if (chars.empty()) {
             throw std::invalid_argument("VProgressBar chars cannot be empty");
         }
-        tick = 100.0 / (chars.size() - 1);  
+        tick = 100.0 / (chars.size() - 1);  // Adjust tick calculation to map the full range of characters
         SetConsoleOutputCP(CP_UTF8);
         showCursor(false);
         redraw();  // Initial draw
@@ -92,7 +92,6 @@ public:
 
     void stop() override {
         std::cout << "\r\033[K" << progress_label << completed_label << std::endl;
-        //std::cout << "DEBUG: Stopping progress indicator at stop()..." << std::endl;
         showCursor(true);
     }
 
@@ -110,7 +109,6 @@ public:
         redraw();
         if (current_percentage >= 100.0) {
             std::cout << "\r\033[K" << progress_label << completed_label << std::endl;
-            //std::cout << "DEBUG: Progress indicator reached 100%!" << std::endl;
             showCursor(true);
         }
     }
@@ -127,10 +125,7 @@ private:
 
     void redraw() {
         std::cout << "\r\033[K" << progress_label; // Clear the line
-        size_t index = static_cast<size_t>((chars.size() - 1) * (current_percentage / 100.0));
-        if (index >= chars.size()) {
-            index = chars.size() - 1; // Ensure index does not exceed bounds
-        }
+        size_t index = static_cast<size_t>((current_percentage / 100.0) * (chars.size() - 1));
         std::cout << chars[index] << std::flush; // Display the current character
     }
 };
