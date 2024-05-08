@@ -10,7 +10,6 @@
 #include <vector>
 #include <string>
 #include <cmath>
-#include <algorithm>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -129,7 +128,9 @@ private:
     void redraw() {
         std::cout << "\r\033[K" << progress_label; // Clear the line
         size_t index = static_cast<size_t>((chars.size() - 1) * (current_percentage / 100.0));
-        index = std::min(index, chars.size() - 1); // Ensure index does not exceed bounds
+        if (index >= chars.size()) {
+            index = chars.size() - 1; // Ensure index does not exceed bounds
+        }
         std::cout << chars[index] << std::flush; // Display the current character
     }
 };
