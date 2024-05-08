@@ -78,7 +78,7 @@ class VProgressBar : public ProgressIndicator {
 public:
     VProgressBar(const std::string& progress_label = "Progress: ",
                 const std::string& completed_label = " ✓ OK!",
-                const std::vector<std::string>& char_frames = {" ", "▂", "▃", "▄", "▅", "▆"})
+                const std::vector<std::string>& char_frames = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇"})
     : ProgressIndicator(progress_label, completed_label), chars(char_frames), current_percentage(0.0) {
         if (chars.empty()) {
             throw std::invalid_argument("VProgressBar chars cannot be empty");
