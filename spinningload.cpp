@@ -1,3 +1,11 @@
+
+//              _           _           __             __             
+//    ___ ___  (_)__  ___  (_)__  ___ _/ /__  ___ ____/ /_______  ___ 
+//   (_-</ _ \/ / _ \/ _ \/ / _ \/ _ `/ / _ \/ _ `/ _  // __/ _ \/ _ \
+//  /___/ .__/_/_//_/_//_/_/_//_/\_, /_/\___/\_,_/\_,_(_)__/ .__/ .__/
+//     /_/                      /___/                     /_/  /_/    
+//
+// A quick test program to show how to use the Progress Spinner library
 #include "include/progress_spinner/progress_spinner.hpp"  // Include your custom header file
 #include <iostream>
 #include <vector>
