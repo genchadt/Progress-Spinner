@@ -7,14 +7,15 @@
 #ifndef PROGRESS_INDICATOR_HPP
 #define PROGRESS_INDICATOR_HPP
 
-#include <iostream>
-#include <chrono>
-#include <thread>
 #include <atomic>
-#include <mutex>
-#include <vector>
-#include <string>
+#include <chrono>
 #include <cmath>
+#include <iostream>
+#include <mutex>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
