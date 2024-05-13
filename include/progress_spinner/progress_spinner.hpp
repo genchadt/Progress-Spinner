@@ -4,6 +4,11 @@
 //   / ____/ /  / /_/ / /_/ / /  /  __(__  |__  )   ___/ / /_/ / / / / / / / /  __/ /    
 //  /_/   /_/   \____/\__, /_/   \___/____/____/   /____/ .___/_/_/ /_/_/ /_/\___/_/     
 //                   /____/                            /_/                               
+/**
+ * \file progress_spinner.hpp
+ * \brief Abstract base class for displaying progress indicators.
+ * \details This class provides an abstract base class for displaying a variety of progress indicators.
+ */
 #ifndef PROGRESS_INDICATOR_HPP
 #define PROGRESS_INDICATOR_HPP
 
@@ -26,8 +31,8 @@ class ProgressIndicator {
 public:
     /**
      * \brief Constructor for ProgressIndicator.
-     * \param progress_label Initial text displayed as the progress label.
-     * \param completed_label Text displayed upon completion.
+     * \param[in] progress_label Initial text displayed as the progress label.
+     * \param[in] completed_label Text displayed upon completion.
      */
     ProgressIndicator(  const std::string& progress_label = "Progress: ",
                         const std::string& completed_label = " ✓ OK!"  )
@@ -42,7 +47,7 @@ public:
 
     /**
      * \brief Updates the text of the progress label.
-     * \param new_text New text to set as the progress label.
+     * \param[in] new_text New text to set as the progress label.
      */
     virtual void updateText(const std::string& new_text) {
         std::lock_guard<std::mutex> lock(mutex);
@@ -67,9 +72,17 @@ protected:
  * \class VProgressBar
  * \brief Class for displaying a progress bar.
  * \details This class provides a visual representation of progress through a single-character vertically-filling bar.
+ * \see https://en.wikipedia.org/wiki/Block_Elements
  */
 class VProgressBar : public ProgressIndicator {
 public:
+    /** 
+     * \brief Constructor for VProgressBar
+     * \param[in] progress_label Initial text displayed as the progress label.
+     * \param[in] completed_label Text displayed upon completion.
+     * \param[in] char_frames Vector of characters to use for the progress bar.
+     * \throws std::invalid_argument if char_frames is empty.
+    */
     VProgressBar(   const std::string& progress_label = "Progress: ",
                     const std::string& completed_label = " ✓ OK!",
                     const std::vector<std::string>& char_frames = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"} )
@@ -87,12 +100,21 @@ public:
 
     void start() override {}
 
+    /**
+     * \brief Stops the progress bar
+     * \details Clears the progress bar and displays the completed message.
+     */
     void stop() override {
         console.clearLine();
         std::cout << progress_label << completed_label << std::endl;
         showCursor(true);
     }
 
+    /**
+     * \brief Updates the progress bar
+     * \details Redraws the progress bar with the new percentage value.
+     * \param new_percentage 
+     */
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
         if (new_percentage >= 100.0 - tick) {
@@ -134,9 +156,19 @@ private:
  * \class HProgressBar
  * \brief Class for displaying a horizontal progress bar using block characters.
  * \details This class visually represents progress through a customizable horizontal bar made up of block characters.
+ * \see https://en.wikipedia.org/wiki/Block_Elements
  */
 class HProgressBar : public ProgressIndicator {
 public:
+    /**
+     * \brief Constructor for HProgressBar
+     * \param[in] progress_label Initial text displayed as the progress label.
+     * \param[in] completed_label Text displayed upon completion.
+     * \param[in] total_segments Total number of segments in the progress bar.
+     * \param[in] empty_char Character to use for empty segments.
+     * \param[in] filled_char Character to use for filled segments.
+     * \see https://en.wikipedia.org/wiki/Block_Elements
+     */
     HProgressBar(   const std::string& progress_label = "Progress: ",
                     const std::string& completed_label = " ✓ OK!",
                     int total_segments = 30,
@@ -150,10 +182,18 @@ public:
             showCursor(false);
         }
 
+    /**
+     * \brief Starts the progress bar
+     * \details Initializes the progress bar and sets the current segments to 0.
+     */
     void start() override {
         updateProgress(0); // Initialize progress bar
     }
 
+    /**
+     * \brief Stops the progress bar
+     * \details Clears the progress bar and displays the completed message.
+     */
     void stop() override {
         std::lock_guard<std::mutex> lock(mutex);
         current_segments = total_segments; // Ensure bar is full
@@ -163,6 +203,10 @@ public:
         showCursor(true);
     }
 
+    /**
+     * \brief Updates the progress bar with a new percentage value
+     * \param[in] new_percentage The new percentage value to display
+     */
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
         current_segments = static_cast<int>(std::round(new_percentage / 100 * total_segments));
@@ -170,7 +214,7 @@ public:
     }
 
 private:
-    int total_segments;
+    int total_segments; 
     int current_segments;
     std::string empty_char, filled_char;
 
@@ -198,10 +242,10 @@ class ProgressSpinner : public ProgressIndicator {
 public:
     /**
      * \brief Constructor for ProgressSpinner.
-     * \param progress_label Initial text displayed as the progress label.
-     * \param completed_label Text displayed upon completion.
-     * \param char_frames Characters used to represent the spinner.
-     * \param update_interval_ms Interval between frame updates in milliseconds.
+     * \param[in] progress_label Initial text displayed as the progress label.
+     * \param[in] completed_label Text displayed upon completion.
+     * \param[in] char_frames Characters used to represent the spinner.
+     * \param[in] update_interval_ms Interval between frame updates in milliseconds.
      */
     ProgressSpinner(    const std::string& progress_label = "Progress: ",
                         const std::string& completed_label = " ✓ OK!",
@@ -217,10 +261,18 @@ public:
             showCursor(false);
         }
 
+    /**
+     * \brief Starts the spinner thread.
+     * \details Sets the keep_alive flag to true and starts the spinner thread.
+     */
     void start() override {
         spinner_thread = std::thread(&ProgressSpinner::run, this);
     }
 
+    /**
+     * \brief Stops the spinner thread.
+     * \details Sets the keep_alive flag to false and waits for the spinner thread to finish.
+     */
     void stop() override {
         keep_alive = false;
         if (spinner_thread.joinable()) {
