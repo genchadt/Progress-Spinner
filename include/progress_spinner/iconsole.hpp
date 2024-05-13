@@ -2,7 +2,11 @@
 #define ICONSOLE_HPP
 
 #include <iostream>
+#include <stdexcept>
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 /**
  * \class IConsole
@@ -14,6 +18,30 @@ class IConsole {
         virtual ~IConsole() = default;
         virtual void clearLine() const = 0;
         virtual void showCursor(bool show_flag) const = 0;
+
+    protected:
+        IConsole() {
+            setUTF8();
+        }
+
+        /**
+         * \brief Set the console codepage to UTF-8
+         * \details This function sets the console codepage to UTF-8 by using the Windows API.
+         */
+        #ifdef _WIN32
+        void setUTF8() const {
+            try {
+                UINT current_cp = GetConsoleOutputCP();
+                if (current_cp != CP_UTF8) {
+                    if (!SetConsoleOutputCP(CP_UTF8)) {
+                        throw std::runtime_error("Failed to set console codepage to UTF-8");
+                    }
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to set console codepage to UTF-8: " << e.what() << std::endl;
+            }
+        }
+        #endif
 };
 
 /** 
@@ -22,6 +50,8 @@ class IConsole {
  */
 class WindowsConsole : public IConsole {
     public:
+        WindowsConsole() = default;
+
         /**
          * \brief Clear the current line
          * \details This function clears the current line in the console via ANSI escape codes.
@@ -51,6 +81,8 @@ class WindowsConsole : public IConsole {
  */
 class UnixConsole : public IConsole {
     public:
+        UnixConsole() = default;
+
         /**
          * \brief Clear the current line
          * \details This function clears the current line in the console via ANSI escape codes.

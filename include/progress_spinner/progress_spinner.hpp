@@ -32,7 +32,8 @@ public:
     ProgressIndicator(  const std::string& progress_label = "Progress: ",
                         const std::string& completed_label = " ✓ OK!"  )
     :   progress_label(progress_label),
-        completed_label(completed_label) {}
+        completed_label(completed_label),
+        console() {}
 
     virtual ~ProgressIndicator() = default;
 
