@@ -13,20 +13,21 @@
 int main() {
     std::cout << "HProgressBar Demo:\n";
 
+    // Construct an HProgressBar (horizontal progress bar) with default labels and progress characters
+    // Then, simulate a task that gradually completes
     HProgressBar hp_bar;
 
-    // Simulate a task that gradually completes, completing once a value of 100 is reached
     hp_bar.start();
     for (int i = 0; i <= 100; i += 5) {
         hp_bar.updateProgress(i);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Simulate time-consuming operations
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
     hp_bar.stop();
 
     std::cout << "\nVProgressBar Demo:\n";
-    // Construct a Progress Bar with default labels and progress characters
+
+    // Now, let's construct a VProgressBar (vertical progress bar)
     VProgressBar pBar;
-    // Simulate a task that gradually completes, completing once a value of 100 is reached
     
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
@@ -35,24 +36,28 @@ int main() {
             pBar.updateText("About halfway there: ");  // Update the progress text mid-operation
             continue;
         } */
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
-    // Construct a Progress Bar with custom labels and progress characters
-    VProgressBar custom_pBar("Working: ", " ✓ OK!", { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" });
+    // Construct a custom vProgressBar with custom labels and progress characters
+    VProgressBar custom_pBar(
+        "Working: ", // Initial text
+        " ✓ OK!", // Completed text
+        { "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" } // Progress characters
+    );
 
     tick = custom_pBar.getTick();
     for (double  i = 0.0; i <= 100.0; i += tick) {
-        custom_pBar.updateProgress(i);  // Update progress
+        custom_pBar.updateProgress(i);
         if (i >= 40.0) {
-            custom_pBar.updateText("Getting close: ");  // Update the progress text mid-operation
+            custom_pBar.updateText("Getting close: ");
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait to simulate work
-    }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     std::cout << "\nProgressSpinner Demo:\n";
 
-    // Construct a Progress Spinner with default labels and progress characters
+    // Construct a ProgressSpinner with default labels and progress characters
+    // Then, simulate a task that gradually completes
     ProgressSpinner spinner;
 
     spinner.start();
@@ -61,8 +66,13 @@ int main() {
     }
     spinner.stop();
 
-    // Construct a Progress Spinner with custom labels and progress characters
-    ProgressSpinner custom_spinner("Working: ", " ✓ OK!", { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" });
+    // Construct a ProgressSpinner with custom labels and progress characters
+    ProgressSpinner custom_spinner(
+        "Working: ", // Initial text
+        " ✓ OK!", // Completed text
+        { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }, // Progress characters
+        100 // Update interval in milliseconds
+    );
 
     custom_spinner.start();
     for (unsigned short i = 0; i < 10; ++i) {
@@ -74,7 +84,11 @@ int main() {
     custom_spinner.stop();
 
     // Construct progress spinner with emojis
-    ProgressSpinner custom_spinner2("Working: ", " ✓ OK!", { "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" });
+    ProgressSpinner custom_spinner2(
+        "Working: ",
+        " ✓ OK!",
+        { "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" }
+    );
 
     custom_spinner2.start();
     for (unsigned short i = 0; i < 10; ++i) {
@@ -86,7 +100,11 @@ int main() {
     custom_spinner2.stop();
 
     // Another example using different emoji chars
-    ProgressSpinner custom_spinner3("Working: ", " ✓ OK!", { "🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚" });
+    ProgressSpinner custom_spinner3(
+        "Working: ",
+        " ✓ OK!",
+        { "🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚" }
+    );
 
     custom_spinner3.start();
     for (unsigned short i = 0; i < 10; ++i) {
