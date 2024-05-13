@@ -94,7 +94,7 @@ public:
                 throw std::invalid_argument("VProgressBar chars cannot be empty");
             }
             tick = 100.0 / (chars.size() - 1);  // Adjust tick calculation to map the full range of characters
-            showCursor(false);
+            showCursor(false); // Hide cursor by default
             redraw();  // Initial draw
         }
 
