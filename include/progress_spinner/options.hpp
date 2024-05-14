@@ -17,6 +17,11 @@ namespace option {
         std::vector<std::string> spinner_chars = {"|", "/", "-", "\\"};
     };
 
+    struct progress_bar_chars
+    {
+        std::vector<std::string> progress_bar_chars = {"░", "█"};
+    };
+
     struct label
     {
         std::string progress_label = "Progress: ";
