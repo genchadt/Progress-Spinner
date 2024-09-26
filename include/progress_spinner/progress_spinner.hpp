@@ -247,6 +247,11 @@ public:
      * \param[in] char_frames Characters used to represent the spinner.
      * \param[in] update_interval_ms Interval between frame updates in milliseconds.
      */
+
+    ~ProgressSpinner() {
+        stop();
+    }
+    
     ProgressSpinner(    const std::string& progress_label = "Progress: ",
                         const std::string& completed_label = " ✓ OK!",
                         const std::vector<std::string>& char_frames = {"|", "/", "-", "\\"},
