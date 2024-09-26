@@ -293,7 +293,10 @@ private:
     void run() {
         size_t index = 0;
         while (keep_alive) {
-            std::cout << "\r" << progress_label << chars[index] << std::flush;
+            {
+                std::lock_guard<std::mutex> lock(mutex);
+                std::cout << "\r" << progress_label << chars[index] << std::flush;
+            }
             std::this_thread::sleep_for(std::chrono::milliseconds(update_interval_ms));
             index = (index + 1) % chars.size();
         }
