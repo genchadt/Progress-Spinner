@@ -10,8 +10,7 @@
 
 /**
  * \class IConsole
- * \brief Abstract base class for displaying progress indicators.
- * \details This class provides an abstract base class for console related functions.
+ * \brief Abstract base class for console related functions.
  */
 class IConsole {
     public:
@@ -63,7 +62,6 @@ class WindowsConsole : public IConsole {
 /** 
  * \class UnixConsole
  * \brief Implementation of IConsole for Unix
- * \details This class provides an implementation of IConsole for Unix.
  */
 class UnixConsole : public IConsole {
     public:
