@@ -46,10 +46,6 @@ public:
     virtual void start() = 0;
     virtual void stop() = 0;
 
-    /**
-     * \brief Updates the text of the progress label.
-     * \param[in] new_text New text to set as the progress label.
-     */
     virtual void updateText(const std::string& new_text) {
         std::lock_guard<std::mutex> lock(mutex);
         progress_label = new_text;
@@ -60,10 +56,6 @@ protected:
     std::mutex mutex;
     Console console;
 
-    /**
-     * \brief Show or hide the cursor.
-     * \param show_flag 
-     */
     void showCursor(bool show_flag) {
         console.showCursor(show_flag);
     }
@@ -84,20 +76,18 @@ public:
      * \param[in] char_frames Vector of characters to use for the progress bar.
      * \throws std::invalid_argument if char_frames is empty.
     */
-    VProgressBar(   const std::string& progress_label = "Progress: ",
-                    const std::string& completed_label = " ✓ OK!",
-                    const std::vector<std::string>& char_frames = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"} )
-    :   ProgressIndicator(progress_label, completed_label),
-        chars(char_frames),
-        completed(false),
-        current_percentage(0.0) {
+    VProgressBar(const VProgressBarOptions& options = VProgressBarOptions())
+        : ProgressIndicator(options.progress_label, options.completed_label),
+          chars(options.char_frames),
+          completed(false),
+          current_percentage(0.0) {
             if (chars.empty()) {
-                throw std::invalid_argument("VProgressBar chars cannot be empty");
+                throw std::invalid_argument("char_frames cannot be empty.");
             }
-            tick = 100.0 / (chars.size() - 1);  // Adjust tick calculation to map the full range of characters
-            showCursor(false); // Hide cursor by default
-            redraw();  // Initial draw
-        }
+            tick = 100.0 / chars.size() - 1;
+            showCursor(false);
+            redraw();
+          }
 
     void start() override {}
 
@@ -170,16 +160,15 @@ public:
      * \param[in] filled_char Character to use for filled segments.
      * \see https://en.wikipedia.org/wiki/Block_Elements
      */
-    HProgressBar(   const std::string& progress_label = "Progress: ",
-                    const std::string& completed_label = " ✓ OK!",
-                    int total_segments = 30,
-                    const std::string& empty_char = "░",
-                    const std::string& filled_char = "█"    )
-    :   ProgressIndicator(progress_label, completed_label),
-        total_segments(total_segments),
-        empty_char(empty_char),
-        filled_char(filled_char),
-        current_segments(0) {
+    HProgressBar(const HProgressBarOptions& options = HProgressBarOptions())
+        : ProgressIndicator(options.progress_label, options.completed_label),
+          total_segments(options.total_segments),
+          empty_char(options.empty_char),
+          filled_char(options.filled_char),
+          current_segments(0) {
+            if (total_segments <= 0) {
+                throw std::invalid_argument("Total segments must be greater than 0.");
+            }
             showCursor(false);
         }
 
@@ -248,24 +237,26 @@ public:
      * \param[in] char_frames Characters used to represent the spinner.
      * \param[in] update_interval_ms Interval between frame updates in milliseconds.
      */
+    ProgressSpinner(const ProgressSpinnerOptions& options = ProgressSpinnerOptions())
+        : ProgressIndicator(options.progress_label, options.completed_label),
+          chars(options.char_frames),
+          keep_alive(true),
+          update_interval_ms(options.update_interval_ms) {
+            if (chars.empty()) {
+                throw std::invalid_argument("Char frames vector may not be empty.");
+            }
+          }
 
     ~ProgressSpinner() {
-        stop();
-    }
-    
-    ProgressSpinner(    const std::string& progress_label = "Progress: ",
-                        const std::string& completed_label = " ✓ OK!",
-                        const std::vector<std::string>& char_frames = {"|", "/", "-", "\\"},
-                        int update_interval_ms = 100    )
-    :   ProgressIndicator(progress_label),
-        chars(char_frames),
-        keep_alive(true),
-        update_interval_ms(update_interval_ms) {
-            if (chars.empty()) {
-                throw std::invalid_argument("Spinner chars cannot be empty");
+        if (keep_alive) {
+            keep_alive = false;
+            if (spinner_thread.joinable()) {
+                spinner_thread.join();
             }
-            showCursor(false);
+            std::cout << "\r" << progress_label << completed_label << std::endl;
+            showCursor(true);
         }
+    }    
 
     /**
      * \brief Starts the spinner thread.

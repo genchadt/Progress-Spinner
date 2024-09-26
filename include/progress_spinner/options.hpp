@@ -12,7 +12,7 @@ namespace option {
         std::string progress_label = "Progress: ";
     };
 
-    struct Num_of_Segments
+    struct NumOfSegments
     {
         int number_of_segments = 30;
     };
@@ -61,7 +61,7 @@ struct HProgressBarOptions {
     HProgressBarOptions(
         const option::Label& label = option::Label(),
         const option::CompletedLabel& completed_label = option::CompletedLabel(),
-        const option::Num_of_Segments& segments = option::Num_of_Segments{30},
+        const option::NumOfSegments& segments = option::NumOfSegments{30},
         const option::ProgressBarChars& chars = option::ProgressBarChars())
         : progress_label(label.progress_label),
           completed_label(completed_label.completed_label),
