@@ -37,17 +37,17 @@ struct ProgressSpinnerOptions
 {
     std::string progress_label;
     std::string completed_label;
-    std::vector<std::string> spinner_chars;
+    std::vector<std::string> char_frames;
     int update_interval_ms;
 
     ProgressSpinnerOptions(
         const option::Label& label = option::Label(),
         const option::CompletedLabel& completed_label = option::CompletedLabel(),
-        const option::SpinnerChars& spinner_chars = option::SpinnerChars(),
+        const option::SpinnerChars& char_frames = option::SpinnerChars(),
         const option::UpdateIntervalMs& update_interval_ms = option::UpdateIntervalMs())
         : progress_label(label.progress_label),
           completed_label(completed_label.completed_label),
-          spinner_chars(spinner_chars.spinner_chars),
+          char_frames(char_frames.spinner_chars),
           update_interval_ms(update_interval_ms.update_interval_ms) {}
 };
 
@@ -60,11 +60,11 @@ struct HProgressBarOptions {
 
     HProgressBarOptions(
         const option::Label& label = option::Label(),
-        const option::CompletedLabel& completed = option::CompletedLabel(),
+        const option::CompletedLabel& completed_label = option::CompletedLabel(),
         const option::Num_of_Segments& segments = option::Num_of_Segments{30},
         const option::ProgressBarChars& chars = option::ProgressBarChars())
         : progress_label(label.progress_label),
-          completed_label(completed.completed_label),
+          completed_label(completed_label.completed_label),
           total_segments(segments.number_of_segments),
           empty_char(chars.progress_bar_chars.size() > 0 ? chars.progress_bar_chars[0] : "░"),
           filled_char(chars.progress_bar_chars.size() > 1 ? chars.progress_bar_chars[1] : "█") {}
