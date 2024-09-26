@@ -22,6 +22,7 @@
 #include <thread>
 #include <vector>
 #include "iconsole.hpp"
+#include "options.hpp"
 
 /**
  * \class ProgressIndicator
