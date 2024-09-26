@@ -14,7 +14,7 @@ namespace option {
 
     struct Num_of_Segments
     {
-        int number_of_segments;
+        int number_of_segments = 30;
     };
 
     struct ProgressBarChars
@@ -29,7 +29,7 @@ namespace option {
 
     struct UpdateIntervalMs
     {
-        int update_interval_ms;
+        int update_interval_ms = 100;
     };
 }
 
