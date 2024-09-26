@@ -2,33 +2,86 @@
 #include <vector>
 
 namespace option {
-    struct number_of_segments
+    struct CompletedLabel
     {
-        int number_of_segments;
-    };
-    
-    struct update_interval_ms
-    {
-        int update_interval_ms;
+        std::string completed_label = " ✓ OK!";
     };
 
-    struct spinner_chars
-    {
-        std::vector<std::string> spinner_chars = {"|", "/", "-", "\\"};
-    };
-
-    struct progress_bar_chars
-    {
-        std::vector<std::string> progress_bar_chars = {"░", "█"};
-    };
-
-    struct label
+    struct Label
     {
         std::string progress_label = "Progress: ";
     };
 
-    struct completed_label
+    struct Num_of_Segments
     {
-        std::string completed_label = " ✓ OK!";
+        int number_of_segments;
+    };
+
+    struct ProgressBarChars
+    {
+        std::vector<std::string> progress_bar_chars = {"░", "█"};
+    };
+
+    struct SpinnerChars
+    {
+        std::vector<std::string> spinner_chars = {"|", "/", "-", "\\"};
+    };
+
+    struct UpdateIntervalMs
+    {
+        int update_interval_ms;
     };
 }
+
+struct ProgressSpinnerOptions 
+{
+    std::string progress_label;
+    std::string completed_label;
+    std::vector<std::string> spinner_chars;
+    int update_interval_ms;
+
+    ProgressSpinnerOptions(
+        const option::Label& label = option::Label(),
+        const option::CompletedLabel& completed_label = option::CompletedLabel(),
+        const option::SpinnerChars& spinner_chars = option::SpinnerChars(),
+        const option::UpdateIntervalMs& update_interval_ms = option::UpdateIntervalMs())
+        : progress_label(label.progress_label),
+          completed_label(completed_label.completed_label),
+          spinner_chars(spinner_chars.spinner_chars),
+          update_interval_ms(update_interval_ms.update_interval_ms) {}
+};
+
+struct HProgressBarOptions {
+    std::string progress_label;
+    std::string completed_label;
+    int total_segments;
+    std::string empty_char;
+    std::string filled_char;
+
+    HProgressBarOptions(
+        const option::Label& label = option::Label(),
+        const option::CompletedLabel& completed = option::CompletedLabel(),
+        const option::Num_of_Segments& segments = option::Num_of_Segments{30},
+        const option::ProgressBarChars& chars = option::ProgressBarChars())
+        : progress_label(label.progress_label),
+          completed_label(completed.completed_label),
+          total_segments(segments.number_of_segments),
+          empty_char(chars.progress_bar_chars.size() > 0 ? chars.progress_bar_chars[0] : "░"),
+          filled_char(chars.progress_bar_chars.size() > 1 ? chars.progress_bar_chars[1] : "█") {}
+};
+
+
+struct VProgressBarOptions
+{
+    std::string progress_label;
+    std::string completed_label;
+    std::vector<std::string> char_frames;
+
+    VProgressBarOptions(
+        const option::Label& label = option::Label(),
+        const option::CompletedLabel& completed_label = option::CompletedLabel(),
+        const option::ProgressBarChars& char_frames = option::ProgressBarChars())
+        : progress_label(label.progress_label),
+          completed_label(completed_label.completed_label),
+          char_frames(char_frames.progress_bar_chars) {}
+};
