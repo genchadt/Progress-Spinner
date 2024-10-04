@@ -5,7 +5,7 @@ setlocal
 set start=%time%
 
 @echo on
-g++ -std=c++11 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp
+g++ -std=c++23 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp
 @echo off
 
 set end=%time%

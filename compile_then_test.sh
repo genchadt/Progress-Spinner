@@ -5,7 +5,7 @@ echo "Compiling..."
 
 start=$(date +%s%N)
 
-g++ -std=c++11 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp
+g++ -std=c++23 -static-libgcc -static-libstdc++ -static -pthread -o spinningload spinningload.cpp
 
 end=$(date +%s%N)
 
