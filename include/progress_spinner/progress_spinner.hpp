@@ -245,7 +245,7 @@ public:
      */
     ProgressSpinner(const ProgressSpinnerOptions& options = ProgressSpinnerOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
-          chars(options.char_frames),
+          chars(options.chars.chars),
           keep_alive(true),
           update_interval_ms(options.update_interval_ms) {
             if (chars.empty()) {
