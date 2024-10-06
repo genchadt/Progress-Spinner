@@ -248,14 +248,7 @@ public:
           }
 
     ~ProgressSpinner() {
-        if (keep_alive) {
-            keep_alive = false;
-            if (spinner_thread.joinable()) {
-                spinner_thread.join();
-            }
-            std::cout << "\r" << progress_label << completed_label << std::endl;
-            showCursor(true);
-        }
+        stop();
     }    
 
     /**
