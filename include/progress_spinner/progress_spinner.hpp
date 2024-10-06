@@ -59,6 +59,10 @@ protected:
     void showCursor(bool show_flag) {
         console.showCursor(show_flag);
     }
+
+    void clearLine() {
+        console.clearLine();
+    }
 };
 
 /**
@@ -96,7 +100,7 @@ public:
      * \details Clears the progress bar and displays the completed message.
      */
     void stop() override {
-        console.clearLine();
+        clearLine();
         std::cout << progress_label << completed_label << std::endl;
         showCursor(true);
     }
@@ -119,7 +123,7 @@ public:
         current_percentage = new_percentage;
         redraw();
         if (current_percentage >= 100.0) {
-            console.clearLine();
+            clearLine();
             std::cout << progress_label << completed_label << std::endl;
             showCursor(true);
         }
@@ -136,7 +140,7 @@ private:
     bool completed;
 
     void redraw() {
-        console.clearLine();
+        clearLine();
         std::cout << progress_label; // Clear the line
         size_t index = static_cast<size_t>((current_percentage / 100.0) * (chars.size() - 1));
         std::cout << chars[index] << std::flush; // Display the current character
@@ -188,7 +192,7 @@ public:
         std::lock_guard<std::mutex> lock(mutex);
         current_segments = total_segments; // Ensure bar is full
         redraw(true); // Redraw one last time with full progress
-        console.clearLine();
+        clearLine();
         std::cout << progress_label << completed_label << std::endl;
         showCursor(true);
     }
@@ -209,7 +213,7 @@ private:
     std::string empty_char, filled_char;
 
     void redraw(bool is_final = false) {
-        console.clearLine();
+        clearLine();
         std::cout << progress_label;
         for (int i = 0; i < current_segments; ++i) {
             std::cout << filled_char;
@@ -256,6 +260,7 @@ public:
      * \details Sets the keep_alive flag to true and starts the spinner thread.
      */
     void start() override {
+        showCursor(false);
         spinner_thread = std::thread(&ProgressSpinner::run, this);
     }
 
@@ -268,6 +273,7 @@ public:
         if (spinner_thread.joinable()) {
             spinner_thread.join();
         }
+        clearLine();
         std::cout << "\r" << progress_label << completed_label << std::endl;
         showCursor(true);
     }
