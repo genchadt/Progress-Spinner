@@ -1,7 +1,6 @@
 // spinningload.cpp
 #include "include/progress_spinner/progress_spinner.hpp"  // Include your custom header file
 #include <iostream>
-#include <vector>
 #include <thread>  // Required for std::this_thread::sleep_for
 #include <chrono>  // Required for std::chrono::milliseconds
 
@@ -13,7 +12,7 @@ int main() {
         option::Label{"Loading: "},
         option::CompletedLabel{" Done!"},
         option::NumOfSegments{50},
-        option::CharFrames{std::vector<std::string>{"-", "#"}}
+        option::CharFrames{"-", "#"}  
     );
 
     HProgressBar hp_bar(hp_options);
@@ -38,11 +37,11 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Wait to simulate work
     }
 
-    // Construct a VProgressBar with custom options
+    // Construct a VProgressBar with custom, "dot-style" progress bar
     VProgressBarOptions vbar_options(
         option::Label{"Progress: "},
         option::CompletedLabel{" OK!"},
-        option::CharFrames{std::vector<std::string>{" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}}
+        option::CharFrames{" ", "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" }  
     );
 
     VProgressBar custom_pBar(vbar_options);
@@ -55,6 +54,7 @@ int main() {
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Wait to simulate work
     }
+    custom_pBar.stop();
 
     std::cout << "\nProgressSpinner Demo:\n";
 
@@ -69,12 +69,13 @@ int main() {
     ProgressSpinnerOptions spinner_options(
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
-        option::CharFrames{std::vector<std::string>{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}},
+        option::CharFrames{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},  
         option::UpdateIntervalMs{100}
     );
 
     ProgressSpinner custom_spinner(spinner_options);
 
+    /*
     custom_spinner.start();
     for (unsigned short i = 0; i < 10; ++i) {
         if (i == 5) {
@@ -88,7 +89,7 @@ int main() {
     ProgressSpinnerOptions spinner_options2(
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
-        option::CharFrames{std::vector<std::string>{"🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"}},
+        option::CharFrames{"🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"},  
         option::UpdateIntervalMs{500}
     );
 
@@ -102,6 +103,24 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     custom_spinner2.stop();
+    */
+    ProgressSpinnerOptions spinner_options3(
+        option::Label{"Working: "},
+        option::CompletedLabel{" ✓ OK!"},
+        option::CharFrames{"⠁", "⠂", "⠄", "⡀", "⢀", "⠠", "⠐", "⠈"},  
+        option::UpdateIntervalMs{100}
+    );
+
+    ProgressSpinner custom_spinner3(spinner_options3);
+
+    custom_spinner3.start();
+    for (unsigned short i = 0; i < 10; ++i) {
+        if (i == 5) {
+            custom_spinner3.updateText("Halfway there: ");  // Update the progress label text mid-operation
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    custom_spinner3.stop();
 
     return 0;
 }

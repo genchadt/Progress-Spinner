@@ -1,3 +1,4 @@
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -18,10 +19,8 @@ namespace option {
     };
 
     struct CharFrames : public std::vector<std::string> {
-        std::vector<std::string> chars;
-
-        CharFrames(const std::vector<std::string>& char_list = {})
-            : chars(char_list) {}
+        CharFrames(const std::initializer_list<std::string>& char_list)
+            : std::vector<std::string>(char_list) {}
     };
 
     struct UpdateIntervalMs
@@ -76,7 +75,11 @@ struct HProgressBarOptions {
         : progress_label(label.progress_label),
           completed_label(completed_label.completed_label),
           total_segments(segments.number_of_segments),
-          chars(char_frames) {}
+          chars(char_frames) {
+        if (chars.size() < 2) {
+            chars = option::CharFrames({"░", "█"});
+        }
+    }
 };
 
 

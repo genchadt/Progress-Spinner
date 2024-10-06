@@ -12,6 +12,7 @@
 #ifndef PROGRESS_INDICATOR_HPP
 #define PROGRESS_INDICATOR_HPP
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cmath>
@@ -82,7 +83,7 @@ public:
     */
     VProgressBar(const VProgressBarOptions& options = VProgressBarOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
-          chars(options.chars.chars),
+          chars(options.chars),
           completed(false),
           current_percentage(0.0) {
             if (chars.empty()) {
@@ -102,6 +103,7 @@ public:
     void stop() override {
         clearLine();
         std::cout << progress_label << completed_label << std::endl;
+        std::cout << std::flush;
         showCursor(true);
     }
 
@@ -112,21 +114,30 @@ public:
      */
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
-        if (new_percentage >= 100.0 - tick / 2) {
-            new_percentage = 100.0; // Automatically set to 100 if close enough
+
+        if (new_percentage >= 100.0) {
+            new_percentage = 100.0;
             if (!completed) {
-                completed = true; // Mark completion to prevent multiple messages
-            } else {
-                return; // Skip updating if already completed
+                completed = true;
+                // Automatically stop when progress reaches 100%
+                stop();  // Stop includes the final redraw with completion message
+                return;  // Exit function to avoid further drawing
             }
+        } else {
+            completed = false;
         }
+
         current_percentage = new_percentage;
         redraw();
-        if (current_percentage >= 100.0) {
-            clearLine();
-            std::cout << progress_label << completed_label << std::endl;
-            showCursor(true);
-        }
+    }
+
+    void updateText(const std::string& new_text) override {
+        std::lock_guard<std::mutex> lock(mutex);
+        progress_label = new_text;
+        // Reset state variables
+        completed = false;
+        displayed_completed_label = false;
+        redraw();
     }
 
     double getCurrentPercentage() const { return current_percentage; }
@@ -138,12 +149,22 @@ private:
     double current_percentage;
     double tick;
     bool completed;
+    bool displayed_completed_label;
 
     void redraw() {
         clearLine();
-        std::cout << progress_label; // Clear the line
-        size_t index = static_cast<size_t>((current_percentage / 100.0) * (chars.size() - 1));
-        std::cout << chars[index] << std::flush; // Display the current character
+        std::cout << progress_label;
+
+        // Ensure percentage doesn't exceed 100%
+        double percentage = std::min(current_percentage, 100.0);
+
+        // Calculate index with proper rounding
+        size_t index = static_cast<size_t>(std::round((percentage / 100.0) * (chars.size() - 1)));
+
+        // Ensure index doesn't exceed chars.size() - 1
+        index = std::min(index, chars.size() - 1);
+
+        std::cout << chars[index] << std::flush;
     }
 };
 
@@ -167,7 +188,7 @@ public:
     HProgressBar(const HProgressBarOptions& options = HProgressBarOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
           total_segments(options.total_segments),
-          chars(options.chars.chars),
+          chars(options.chars),
           current_segments(0) {
         if (total_segments <= 0) {
             throw std::invalid_argument("Total segments must be greater than 0.");
@@ -214,14 +235,19 @@ private:
     int current_segments;
     option::CharFrames chars;
 
+    /**
+     * \brief Redraws the progress bar
+     * \details Clears the line, displays the progress label, and fills the bar with the correct number of filled and empty characters.
+     * \param[in] is_final If true, prevents the output from being flushed, allowing the next line to overwrite the bar.
+     */
     void redraw(bool is_final = false) {
         clearLine();
         std::cout << progress_label;
         for (int i = 0; i < current_segments; ++i) {
-            // std::cout << filled_char;
+            std::cout << chars[1]; // Filled character
         }
         for (int i = current_segments; i < total_segments; ++i) {
-            // std::cout << empty_char;
+            std::cout << chars[0]; // Empty character
         }
         if (!is_final) {
             std::cout << std::flush;
@@ -245,7 +271,7 @@ public:
      */
     ProgressSpinner(const ProgressSpinnerOptions& options = ProgressSpinnerOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
-          chars(options.chars.chars),
+          chars(options.chars),
           keep_alive(true),
           update_interval_ms(options.update_interval_ms) {
             if (chars.empty()) {
@@ -275,15 +301,18 @@ public:
         if (spinner_thread.joinable()) {
             spinner_thread.join();
         }
-        clearLine();
-        std::cout << "\r" << progress_label << completed_label << std::endl;
-        showCursor(true);
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            clearLine();
+            std::cout << "\r" << progress_label << completed_label << std::endl;
+            showCursor(true);
+        }
     }
 
     size_t getCharCount() const { return chars.size(); }
 
 private:
-    std::vector<std::string> chars;
+    option::CharFrames chars;
     std::atomic<bool> keep_alive;
     std::thread spinner_thread;
     int update_interval_ms = 100;

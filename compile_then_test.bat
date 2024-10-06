@@ -14,6 +14,7 @@ set /A mins=((1%end:~3,2% - 1%start:~3,2% + 60) %% 60)
 set /A secs=((1%end:~6,2% - 1%start:~6,2% + 60) %% 60)
 set /A csecs=((1%end:~9,2% - 1%start:~9,2% + 100) %% 100)
 
+echo:
 echo Compile complete.
 echo Compile Time: %hours%:%mins%:%secs%.%csecs%
 
