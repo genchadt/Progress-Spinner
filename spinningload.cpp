@@ -13,7 +13,7 @@ int main() {
         option::Label{"Loading: "},
         option::CompletedLabel{" Done!"},
         option::NumOfSegments{50},
-        option::ProgressBarChars{std::vector<std::string>{"-", "#"}}
+        option::CharFrames{std::vector<std::string>{"-", "#"}}
     );
 
     HProgressBar hp_bar(hp_options);
@@ -42,7 +42,7 @@ int main() {
     VProgressBarOptions vbar_options(
         option::Label{"Progress: "},
         option::CompletedLabel{" OK!"},
-        option::ProgressBarChars{std::vector<std::string>{"⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿"}}
+        option::CharFrames{std::vector<std::string>{" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}}
     );
 
     VProgressBar custom_pBar(vbar_options);
@@ -69,7 +69,7 @@ int main() {
     ProgressSpinnerOptions spinner_options(
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
-        option::SpinnerChars{std::vector<std::string>{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}},
+        option::CharFrames{std::vector<std::string>{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}},
         option::UpdateIntervalMs{100}
     );
 
@@ -88,7 +88,7 @@ int main() {
     ProgressSpinnerOptions spinner_options2(
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
-        option::SpinnerChars{std::vector<std::string>{"🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"}},
+        option::CharFrames{std::vector<std::string>{"🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"}},
         option::UpdateIntervalMs{500}
     );
 
