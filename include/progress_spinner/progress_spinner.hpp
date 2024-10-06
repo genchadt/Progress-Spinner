@@ -84,7 +84,7 @@ public:
             if (chars.empty()) {
                 throw std::invalid_argument("char_frames cannot be empty.");
             }
-            tick = 100.0 / chars.size() - 1;
+            tick = 100.0 / (chars.size() - 1);
             showCursor(false);
             redraw();
           }
@@ -108,7 +108,7 @@ public:
      */
     void updateProgress(double new_percentage) {
         std::lock_guard<std::mutex> lock(mutex);
-        if (new_percentage >= 100.0 - tick) {
+        if (new_percentage >= 100.0 - tick / 2) {
             new_percentage = 100.0; // Automatically set to 100 if close enough
             if (!completed) {
                 completed = true; // Mark completion to prevent multiple messages
