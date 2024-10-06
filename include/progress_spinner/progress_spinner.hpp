@@ -82,7 +82,7 @@ public:
     */
     VProgressBar(const VProgressBarOptions& options = VProgressBarOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
-          chars(options.char_frames),
+          chars(options.chars.chars),
           completed(false),
           current_percentage(0.0) {
             if (chars.empty()) {
@@ -134,7 +134,7 @@ public:
     double getTick() const { return tick; }
 
 private:
-    std::vector<std::string> chars;
+    option::CharFrames chars;
     double current_percentage;
     double tick;
     bool completed;
@@ -167,14 +167,16 @@ public:
     HProgressBar(const HProgressBarOptions& options = HProgressBarOptions())
         : ProgressIndicator(options.progress_label, options.completed_label),
           total_segments(options.total_segments),
-          empty_char(options.empty_char),
-          filled_char(options.filled_char),
+          chars(options.chars.chars),
           current_segments(0) {
-            if (total_segments <= 0) {
-                throw std::invalid_argument("Total segments must be greater than 0.");
-            }
-            showCursor(false);
+        if (total_segments <= 0) {
+            throw std::invalid_argument("Total segments must be greater than 0.");
         }
+        if (chars.size() < 2) {
+            throw std::invalid_argument("At least two characters are required for HProgressBar (empty and filled).");
+        }
+        showCursor(false);
+    }
 
     /**
      * \brief Starts the progress bar
@@ -210,16 +212,16 @@ public:
 private:
     int total_segments; 
     int current_segments;
-    std::string empty_char, filled_char;
+    option::CharFrames chars;
 
     void redraw(bool is_final = false) {
         clearLine();
         std::cout << progress_label;
         for (int i = 0; i < current_segments; ++i) {
-            std::cout << filled_char;
+            // std::cout << filled_char;
         }
         for (int i = current_segments; i < total_segments; ++i) {
-            std::cout << empty_char;
+            // std::cout << empty_char;
         }
         if (!is_final) {
             std::cout << std::flush;
