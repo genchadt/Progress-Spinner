@@ -297,7 +297,14 @@ public:
      * \details Sets the keep_alive flag to false and waits for the spinner thread to finish.
      */
     void stop() override {
-        keep_alive = false;
+        {
+            std::lock_guard<std::mutex> lock(mutex);
+            if (stopped) {
+                return; // Already stopped, do nothing
+            }
+            stopped = true;
+            keep_alive = false;
+        }
         if (spinner_thread.joinable()) {
             spinner_thread.join();
         }
@@ -316,15 +323,19 @@ private:
     std::atomic<bool> keep_alive;
     std::thread spinner_thread;
     int update_interval_ms = 100;
+    bool stopped = false;
 
     void run() {
         size_t index = 0;
-        while (keep_alive) {
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(update_interval_ms));
             {
                 std::lock_guard<std::mutex> lock(mutex);
+                if (!keep_alive) {
+                    break;
+                }
                 std::cout << "\r" << progress_label << chars[index] << std::flush;
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(update_interval_ms));
             index = (index + 1) % chars.size();
         }
     }
