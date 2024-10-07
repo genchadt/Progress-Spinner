@@ -10,8 +10,8 @@ int main() {
     // Create options for HProgressBar
     HProgressBarOptions hp_options(
         option::Label{"Loading: "},
-        option::CompletedLabel{" Done!"},
-        option::NumOfSegments{50},
+        option::CompletedLabel{"✓ OK!"},
+        option::NumOfSegments{30},
         option::CharFrames{"-", "#"}  
     );
 
@@ -34,13 +34,13 @@ int main() {
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));  // Wait to simulate work
     }
 
     // Construct a VProgressBar with custom, "dot-style" progress bar
     VProgressBarOptions vbar_options(
         option::Label{"Progress: "},
-        option::CompletedLabel{" OK!"},
+        option::CompletedLabel{"✓ OK!"},
         option::CharFrames{" ", "⣀", "⣄", "⣤", "⣦", "⣶", "⣷", "⣿" }  
     );
 
@@ -75,7 +75,6 @@ int main() {
 
     ProgressSpinner custom_spinner(spinner_options);
 
-    /*
     custom_spinner.start();
     for (unsigned short i = 0; i < 10; ++i) {
         if (i == 5) {
@@ -103,7 +102,7 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     custom_spinner2.stop();
-    */
+
     ProgressSpinnerOptions spinner_options3(
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
