@@ -12,11 +12,13 @@ public:
     void start() override;
     void stop() override;
     void updateProgress(double new_percentage);
+    void updateText(const std::string& new_text) override;
 
 private:
     int total_segments;
     int current_segments;
     option::CharFrames chars;
+    bool use_brackets;
 
     void redraw(bool is_final = false);
 };
