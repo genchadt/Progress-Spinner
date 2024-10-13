@@ -1,30 +1,40 @@
-# Gitignore
+# Gitignore for project
+
+# VSCode settings
 .vscode/
 
-# Auth keys
+# Authentication keys
 *.key
 *.pem
 *.cer
 *.pfx
 
-# Binaries
+# Compiled binaries
 *.exe
 *.dll
 *.so
 *.dylib
+*.bin
 
-# Other file types
+# Object files and libraries
 *.class
 *.o
 *.lo
 *.la
-*.bin
+*.a
+*.lib
+
+# Build output files
 *.out
 *.log
+
+# Temporary files and backups
 *.tmp
 *.bak
 *.swp
 *.swo
+
+# Archive files
 *.zip
 *.rar
 *.gz
@@ -32,12 +42,23 @@
 *.7z
 *.iso
 *.dmg
+
+# Java-related files
 *.jar
 *.war
 *.ear
+
+# Mobile app bundles
 *.apk
 *.ipa
 *.app
 
-# CMake files
+# CMake-generated files
 /build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Clangd
+compile_commands.json
