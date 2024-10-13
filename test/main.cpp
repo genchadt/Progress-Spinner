@@ -34,7 +34,7 @@ int main() {
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
-        std::this_thread::sleep_for(std::chrono::milliseconds(400));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(750));  // Wait to simulate work
     }
 
     // Construct a VProgressBar with custom, "dot-style" progress bar
@@ -52,7 +52,7 @@ int main() {
         if (i >= 40.0) {
             custom_pBar.updateText("Getting close: ");  // Update the progress text mid-operation
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));  // Wait to simulate work
     }
     custom_pBar.stop();
 

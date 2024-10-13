@@ -106,9 +106,13 @@ void VProgressBar::redraw() {
     clearLine();
     std::cout << progress_label;
 
-    double percentage = std::min(current_percentage, 100.0);
-    size_t index = static_cast<size_t>(std::round((percentage / 100.0) * (chars.size() - 1)));
-    index = std::min(index, chars.size() - 1);
+    double percentage = (std::min)(current_percentage, 100.0);
+    const double final_frame_threshold = 75.0;
+    const size_t frame_offset = 1;
 
+    size_t num_frames = chars.size();
+    size_t index = static_cast<size_t>(std::floor((percentage / final_frame_threshold) * (num_frames - frame_offset)));
+
+    index = (std::min)(index, num_frames - 1);
     std::cout << chars[index] << std::flush;
 }
