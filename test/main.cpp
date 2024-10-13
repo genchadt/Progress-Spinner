@@ -88,7 +88,7 @@ int main() {
         option::Label{"Working: "},
         option::CompletedLabel{" ✓ OK!"},
         option::CharFrames{"🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"},  
-        option::UpdateIntervalMs{500}
+        option::UpdateIntervalMs{200}
     );
 
     ProgressSpinner custom_spinner2(spinner_options2);
