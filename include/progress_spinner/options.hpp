@@ -1,57 +1,46 @@
-#include <initializer_list>
+#ifndef PROGRESS_INDICATOR_OPTIONS_HPP
+#define PROGRESS_INDICATOR_OPTIONS_HPP
+
 #include <string>
 #include <vector>
+#include <initializer_list>
 
 namespace option {
-    struct CompletedLabel
-    {
-        std::string completed_label = " ✓ OK!";
-    };
 
-    struct Label
-    {
-        std::string progress_label = "Progress: ";
-    };
+struct CompletedLabel {
+    std::string completed_label = " ✓ OK!";
+};
 
-    struct NumOfSegments
-    {
-        int number_of_segments = 30;
-    };
+struct Label {
+    std::string progress_label = "Progress: ";
+};
 
-    struct CharFrames : public std::vector<std::string> {
-        CharFrames(const std::initializer_list<std::string>& char_list)
-            : std::vector<std::string>(char_list) {}
-    };
+struct NumOfSegments {
+    int number_of_segments = 30;
+};
 
-    struct UpdateIntervalMs
-    {
-        int update_interval_ms = 100;
-    };
-}
+struct CharFrames : public std::vector<std::string> {
+    CharFrames(const std::initializer_list<std::string>& char_list)
+        : std::vector<std::string>(char_list) {}
+};
 
-struct ProgressSpinnerOptions 
-{
+struct UpdateIntervalMs {
+    int update_interval_ms = 100;
+};
+
+} // namespace option
+
+struct ProgressSpinnerOptions {
     std::string progress_label;
     std::string completed_label;
     option::CharFrames chars;
     int update_interval_ms;
 
-    /**
-     * \brief Constructor for ProgressSpinnerOptions
-     * \details Sets the options for ProgressSpinner to the given values.
-     * \param[in] label Initial text displayed as the progress label. Can be changed during runtime.
-     * \param[in] completed_label Text displayed upon completion.
-     * \param[in] char_frames Vector of characters to use for the progress spinner.
-     * \param[in] update_interval_ms Interval between frame updates in milliseconds.
-     */
+    // Declaration only (no inline definition)
     ProgressSpinnerOptions(const option::Label& label = option::Label(),
                            const option::CompletedLabel& completed_label = option::CompletedLabel(),
                            const option::CharFrames& char_frames = option::CharFrames({"|", "/", "-", "\\"}),
-                           const option::UpdateIntervalMs& update_interval_ms = option::UpdateIntervalMs())
-        : progress_label(label.progress_label),
-          completed_label(completed_label.completed_label),
-          chars(char_frames),
-          update_interval_ms(update_interval_ms.update_interval_ms) {}
+                           const option::UpdateIntervalMs& update_interval_ms = option::UpdateIntervalMs());
 };
 
 struct HProgressBarOptions {
@@ -60,46 +49,22 @@ struct HProgressBarOptions {
     int total_segments;
     option::CharFrames chars;
 
-    /**
-     * \brief Constructor for HProgressBarOptions
-     * \details Sets the options for HProgressBar to the given values.
-     * \param[in] label Initial text displayed as the progress label.
-     * \param[in] completed_label Text displayed upon completion.
-     * \param[in] segments Total number of segments in the progress bar.
-     * \param[in] char_frames Vector of characters to use for the progress bar.
-     */
+    // Declaration only (no inline definition)
     HProgressBarOptions(const option::Label& label = option::Label(),
                         const option::CompletedLabel& completed_label = option::CompletedLabel(),
                         const option::NumOfSegments& segments = option::NumOfSegments{30},
-                        const option::CharFrames& char_frames = option::CharFrames({"░", "█"}))
-        : progress_label(label.progress_label),
-          completed_label(completed_label.completed_label),
-          total_segments(segments.number_of_segments),
-          chars(char_frames) {
-        if (chars.size() < 2) {
-            chars = option::CharFrames({"░", "█"});
-        }
-    }
+                        const option::CharFrames& char_frames = option::CharFrames({"░", "█"}));
 };
 
-
-struct VProgressBarOptions
-{
+struct VProgressBarOptions {
     std::string progress_label;
     std::string completed_label;
     option::CharFrames chars;
 
-    /**
-     * \brief Constructor for VProgressBarOptions
-     * \details Sets the options for VProgressBar to the given values.
-     * \param[in] label Initial text displayed as the progress label.
-     * \param[in] completed_label Text displayed upon completion.
-     * \param[in] char_frames Vector of characters to use for the progress bar.
-     */
+    // Declaration only (no inline definition)
     VProgressBarOptions(const option::Label& label = option::Label(),
                         const option::CompletedLabel& completed_label = option::CompletedLabel(),
-                        const option::CharFrames& char_frames = option::CharFrames({" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}))
-        : progress_label(label.progress_label),
-          completed_label(completed_label.completed_label),
-          chars(char_frames) {}
+                        const option::CharFrames& char_frames = option::CharFrames({" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}));
 };
+
+#endif // PROGRESS_INDICATOR_OPTIONS_HPP

@@ -1,5 +1,5 @@
 // spinningload.cpp
-#include "include/progress_spinner/progress_spinner.hpp"  // Include your custom header file
+#include "progress_spinner/progress_indicators.hpp"  // Include your custom header file
 #include <iostream>
 #include <thread>  // Required for std::this_thread::sleep_for
 #include <chrono>  // Required for std::chrono::milliseconds
