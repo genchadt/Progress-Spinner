@@ -94,28 +94,34 @@ void VProgressBar::updateText(const std::string& new_text) {
     redraw();
 }
 
+
 /**
- * \brief Redraw the vertical progress bar with the current progress.
+ * \brief Redraw the vertical progress bar with the updated progress.
  *
- * This function redraws the vertical progress bar with the current progress
- * and the current label. If the task has completed, the completed label is
- * displayed. Otherwise, the progress bar will be redrawn with the updated
- * progress.
+ * This method redoes the vertical progress bar, using the current percentage
+ * value to determine which frame to display. The frame index is calculated as
+ * `(percentage / final_frame_threshold) * (num_frames - frame_offset)`.
+ * The final frame is shown if the percentage is greater than or equal to
+ * `final_frame_threshold`. The frame index is clamped to the valid range
+ * `[frame_offset, num_frames - frame_offset)`.
+ *
+ * \note This method is thread-safe as it is protected by a mutex.
  */
 void VProgressBar::redraw() {
-    clearLine();
-    std::cout << progress_label;
+    using std::min;  // Ensure std::min is used to avoid macro conflicts
 
-    // Needed to get my linter to shut up
-    auto min = [](auto a, auto b) { return (std::min)(a, b); };
+    const double final_frame_threshold = 75.0;  // Threshold to start showing the final frame
+    const size_t frame_offset = 1;              // Offset to map percentage to frame index
 
     double percentage = min(current_percentage, 100.0);
-    const double final_frame_threshold = 75.0;
-    const size_t frame_offset = 1;
-
+    double scaled_percentage = (percentage / final_frame_threshold);
     size_t num_frames = chars.size();
-    size_t index = static_cast<size_t>(std::floor((percentage / final_frame_threshold) * (num_frames - frame_offset)));
+    size_t frame_index = static_cast<size_t>(
+        std::floor(scaled_percentage * (num_frames - frame_offset))
+    );
 
-    index = min(index, num_frames - 1);
-    std::cout << chars[index] << std::flush;
+    frame_index = min(frame_index, num_frames - frame_offset);
+
+    clearLine();
+    std::cout << progress_label << chars[frame_index] << std::flush;
 }
