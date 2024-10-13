@@ -1,4 +1,3 @@
-// spinningload.cpp
 #include "progress_spinner/progress_indicators.hpp"  // Include your custom header file
 #include <iostream>
 #include <thread>  // Required for std::this_thread::sleep_for
@@ -34,7 +33,7 @@ int main() {
     double tick = pBar.getTick();
     for (double i = 0; i <= 100; i += tick) {
         pBar.updateProgress(i);  // Update progress
-        std::this_thread::sleep_for(std::chrono::milliseconds(750));  // Wait to simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));  // Wait to simulate work
     }
 
     // Construct a VProgressBar with custom, "dot-style" progress bar
@@ -80,7 +79,7 @@ int main() {
         if (i == 5) {
             custom_spinner.updateText("Halfway there: ");  // Update the progress label text mid-operation
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
     }
     custom_spinner.stop();
 
