@@ -20,6 +20,15 @@ struct NumOfSegments {
 };
 
 struct CharFrames : public std::vector<std::string> {
+/**
+ * \brief Constructor for CharFrames.
+ *
+ * \param char_list The sequence of characters used to represent the progress
+ *                  bar. The first character is used for empty segments, and the
+ *                  last character is used for filled segments. If the sequence
+ *                  is less than 2 characters, the default of " " and "█" is
+ *                  used.
+ */
     CharFrames(const std::initializer_list<std::string>& char_list)
         : std::vector<std::string>(char_list) {}
 };
@@ -36,7 +45,16 @@ struct ProgressSpinnerOptions {
     option::CharFrames chars;
     int update_interval_ms;
 
-    // Declaration only (no inline definition)
+    /**
+     * \brief Constructor for ProgressSpinnerOptions.
+     *
+     * \param label The initial label string.
+     * \param completed_label The string to display when the task is complete.
+     * \param char_frames A sequence of characters used to represent the spinner animation.
+     *                    The sequence is rotated every update_interval_ms milliseconds.
+     * \param update_interval_ms The interval in milliseconds between each spinner animation
+     *                            frame update.
+     */
     ProgressSpinnerOptions(const option::Label& label = option::Label(),
                            const option::CompletedLabel& completed_label = option::CompletedLabel(),
                            const option::CharFrames& char_frames = option::CharFrames({"|", "/", "-", "\\"}),
@@ -49,7 +67,17 @@ struct HProgressBarOptions {
     int total_segments;
     option::CharFrames chars;
 
-    // Declaration only (no inline definition)
+    /**
+     * \brief Constructor for HProgressBarOptions.
+     *
+     * \param label The initial label string.
+     * \param completed_label The string to display when the task is complete.
+     * \param segments The total number of segments in the bar.
+     * \param char_frames A sequence of characters used to represent filled segments.
+     *                    The first character is used for empty segments, and the last
+     *                    character is used for filled segments. If the sequence is
+     *                    less than 2 characters, the default of " " and "█" is used.
+     */
     HProgressBarOptions(const option::Label& label = option::Label(),
                         const option::CompletedLabel& completed_label = option::CompletedLabel(),
                         const option::NumOfSegments& segments = option::NumOfSegments{30},
@@ -61,7 +89,17 @@ struct VProgressBarOptions {
     std::string completed_label;
     option::CharFrames chars;
 
-    // Declaration only (no inline definition)
+    /**
+     * \brief Constructor for VProgressBarOptions.
+     *
+     * \param label The initial label string.
+     * \param completed_label The string to display when the task is complete.
+     * \param char_frames A sequence of characters used to represent the vertical
+     *                    progress bar. The first character is used for empty
+     *                    segments, and subsequent characters are used for filled
+     *                    segments. If the sequence is empty, the default of " ",
+     *                    "▁", "▂", "▃", "▄", "▅", "▆", "▇", and "█" is used.
+     */
     VProgressBarOptions(const option::Label& label = option::Label(),
                         const option::CompletedLabel& completed_label = option::CompletedLabel(),
                         const option::CharFrames& char_frames = option::CharFrames({" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}));
