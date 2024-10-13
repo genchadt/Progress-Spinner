@@ -61,5 +61,5 @@ cmake_install.cmake
 Makefile
 
 # Clangd
-/.cache/
+.cache/
 compile_commands.json
