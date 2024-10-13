@@ -17,6 +17,17 @@ ProgressSpinnerOptions::ProgressSpinnerOptions(const option::Label& label,
       chars(char_frames),
       update_interval_ms(update_interval_ms.update_interval_ms) {}
 
+/**
+ * \brief Constructor for HProgressBarOptions.
+ *
+ * \param label The initial label string.
+ * \param completed_label The string to display when the task is complete.
+ * \param segments The total number of segments in the bar.
+ * \param char_frames A sequence of characters used to represent filled segments.
+ *                    The first character is used for empty segments, and the last
+ *                    character is used for filled segments. If the sequence is
+ *                    less than 2 characters, the default of "░" and "█" is used.
+ */
 HProgressBarOptions::HProgressBarOptions(const option::Label& label,
                                          const option::CompletedLabel& completed_label,
                                          const option::NumOfSegments& segments,
@@ -30,6 +41,17 @@ HProgressBarOptions::HProgressBarOptions(const option::Label& label,
     }
 }
 
+/**
+ * \brief Constructor for VProgressBarOptions.
+ *
+ * \param label The initial label string.
+ * \param completed_label The string to display when the task is complete.
+ * \param char_frames A sequence of characters used to represent the vertical
+ *                    progress bar. The first character is used for empty
+ *                    segments, and subsequent characters are used for filled
+ *                    segments. If the sequence is empty, the default of " ",
+ *                    "▁", "▂", "▃", "▄", "▅", "▆", "▇", and "█" is used.
+ */
 VProgressBarOptions::VProgressBarOptions(const option::Label& label,
                                          const option::CompletedLabel& completed_label,
                                          const option::CharFrames& char_frames)
