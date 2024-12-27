@@ -2,7 +2,6 @@
 #define PROGRESS_INDICATOR_OPTIONS_HPP
 
 #include <initializer_list>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
