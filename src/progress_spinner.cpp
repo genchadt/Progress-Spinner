@@ -1,8 +1,6 @@
 #include "progress_spinner/progress_spinner.hpp"
-#include <cmath>
 #include <iostream>
 #include <mutex>
-#include <stdexcept>
 
 /**
  * \brief Construct a ProgressSpinner.

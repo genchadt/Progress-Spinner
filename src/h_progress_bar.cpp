@@ -2,7 +2,6 @@
 #include <cmath>
 #include <iostream>
 #include <mutex>
-#include <stdexcept>
 
 HProgressBar::HProgressBar(const HProgressBarOptions& options)
     : ProgressIndicator(options.progress_label, options.completed_label),

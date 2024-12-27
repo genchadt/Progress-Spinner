@@ -2,7 +2,6 @@
 #include <cmath>
 #include <iostream>
 #include <mutex>
-#include <stdexcept>
 
 /**
  * \brief Constructor for VProgressBar.

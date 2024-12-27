@@ -3,7 +3,6 @@
 
 #include "progress_indicator.hpp"
 #include "options.hpp"
-#include <stdexcept>
 
 class HProgressBar : public ProgressIndicator {
 public:
