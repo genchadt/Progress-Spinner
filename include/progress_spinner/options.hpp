@@ -34,6 +34,18 @@ struct CharFrames : public std::vector<std::string> {
         : std::vector<std::string>(char_list) {}
 };
 
+struct ProgressChars : public CharFrames {
+    ProgressChars(const std::initializer_list<std::string>& char_list) : CharFrames(char_list) {}
+};
+
+struct BracketChars : public CharFrames {
+    BracketChars(const std::initializer_list<std::string>& char_list) : CharFrames(char_list) {}
+};
+
+struct UseBrackets {
+    bool use_brackets = false;
+};
+
 struct UpdateIntervalMs {
     int update_interval_ms = 100;
 };
@@ -56,16 +68,19 @@ struct HProgressBarOptions {
     std::string progress_label;
     std::string completed_label;
     int total_segments;
-    option::CharFrames chars;
-    bool use_brackets;
+    option::ProgressChars progress_chars;
+    option::BracketChars bracket_chars;
 
     HProgressBarOptions(const option::Label& label = option::Label(),
                         const option::CompletedLabel& completed_label = option::CompletedLabel(),
                         const option::NumOfSegments& segments = option::NumOfSegments{30},
-                        const option::CharFrames& char_frames = option::CharFrames({"[", "]", "░", "█"}),
-                        bool use_brackets = true);
-};
+                        const option::ProgressChars& progress_chars = option::ProgressChars({"░", "█"}),
+                        const option::BracketChars& bracket_chars = option::BracketChars({"", ""}));
 
+    bool has_brackets() const {
+        return bracket_chars.size() == 2 && !bracket_chars[0].empty() && !bracket_chars[1].empty();
+    }
+};
 
 struct VProgressBarOptions {
     std::string progress_label;

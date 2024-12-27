@@ -16,8 +16,9 @@ public:
 private:
     int total_segments;
     int current_segments;
-    option::CharFrames chars;
-    bool use_brackets;
+    option::CharFrames progress_chars;
+    option::CharFrames bracket_chars;
+    const HProgressBarOptions* options;
 
     void redraw(bool is_final = false);
 };

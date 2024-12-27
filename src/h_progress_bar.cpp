@@ -6,16 +6,12 @@
 HProgressBar::HProgressBar(const HProgressBarOptions& options)
     : ProgressIndicator(options.progress_label, options.completed_label),
       total_segments(options.total_segments),
-      chars(options.chars),
+      progress_chars(options.progress_chars),
+      bracket_chars(options.bracket_chars),
       current_segments(0),
-      use_brackets(options.use_brackets) {
+      options(&options) {
     if (total_segments <= 0) {
         throw std::invalid_argument("Total segments must be greater than 0.");
-    }
-
-    size_t expected_size = use_brackets ? 4 : 2;
-    if (chars.size() != expected_size) {
-        throw std::invalid_argument("Incorrect number of characters provided for HProgressBar.");
     }
 
     showCursor(false);
@@ -53,25 +49,25 @@ void HProgressBar::redraw(bool is_final) {
     clearLine();
     std::cout << progress_label;
 
-    size_t empty_char_index = use_brackets ? 2 : 0;
-    size_t filled_char_index = use_brackets ? 3 : 1;
+    char empty_char = progress_chars[0][0];
+    char filled_char = progress_chars[1][0];
 
     // Start bracket
-    if (use_brackets) {
-        std::cout << chars[0];
+    if (options->has_brackets()) {
+        std::cout << bracket_chars[0];
     }
 
     // Progress bar
     for (int i = 0; i < current_segments; ++i) {
-        std::cout << chars[filled_char_index];
+        std::cout << filled_char;
     }
     for (int i = current_segments; i < total_segments; ++i) {
-        std::cout << chars[empty_char_index];
+        std::cout << empty_char;
     }
 
     // End bracket
-    if (use_brackets) {
-        std::cout << chars[1];
+    if (options->has_brackets()) {
+        std::cout << bracket_chars[1];
     }
 
     if (!is_final) {

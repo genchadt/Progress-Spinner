@@ -34,25 +34,19 @@ ProgressSpinnerOptions::ProgressSpinnerOptions(const option::Label& label,
 HProgressBarOptions::HProgressBarOptions(const option::Label& label,
                                          const option::CompletedLabel& completed_label,
                                          const option::NumOfSegments& segments,
-                                         const option::CharFrames& char_frames,
-                                         bool use_brackets)
+                                         const option::ProgressChars& progress_chars,
+                                         const option::BracketChars& bracket_chars)
     : progress_label(label.progress_label),
       completed_label(completed_label.completed_label),
       total_segments(segments.number_of_segments),
-      chars(char_frames),
-      use_brackets(use_brackets) {
-    // If brackets are to be used
-    if (use_brackets) {
-        if (chars.size() == 2) {
-            // Automatically add default brackets if only two characters are provided
-            chars.insert(chars.begin(), {std::string("["), std::string("]")});  // Corrected
-        } else if (chars.size() != 4) {
-            throw std::invalid_argument("When use_brackets is true, char_frames must have either 2 or 4 characters.");
+      progress_chars(progress_chars),
+      bracket_chars(bracket_chars) {
+        if (progress_chars.size() < 1 || progress_chars.size() > 2) {
+            throw std::invalid_argument("HProgressBarOptions: progress_chars must have 1 or 2 elements, got " + std::to_string(progress_chars.size()));
         }
-    } else if (chars.size() != 2) {
-        // Without brackets, we expect exactly 2 characters
-        throw std::invalid_argument("When use_brackets is false, char_frames must have exactly 2 characters.");
-    }
+        if (bracket_chars.size() != 2) {
+            throw std::invalid_argument("HProgressBarOptions: bracket_chars must have 2 elements, got " + std::to_string(bracket_chars.size()));
+        }
 }
 
 /**

@@ -1,4 +1,4 @@
-#include "progress_spinner/progress_indicators.hpp"  // Include your custom header file
+#include "progress_spinner/progress_indicators.hpp"
 #include <iostream>
 #include <thread>  // Required for std::this_thread::sleep_for
 #include <chrono>  // Required for std::chrono::milliseconds
@@ -11,7 +11,8 @@ int main() {
         option::Label{"Loading: "},
         option::CompletedLabel{"✓ OK!"},
         option::NumOfSegments{30},
-        option::CharFrames{"-", "#"}  
+        option::ProgressChars{"-", "#"},
+        option::BracketChars{"[", "]"}
     );
 
     HProgressBar hp_bar(hp_options);
