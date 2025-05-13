@@ -3,13 +3,14 @@
 #include <iostream>
 #include <mutex>
 
-HProgressBar::HProgressBar(const HProgressBarOptions& options)
-    : ProgressIndicator(options.progress_label, options.completed_label),
-      total_segments(options.total_segments),
-      progress_chars(options.progress_chars),
-      bracket_chars(options.bracket_chars),
-      current_segments(0),
-      options(&options) {
+HProgressBar::HProgressBar(const HProgressBarOptions& bar_options)
+    : ProgressIndicator(bar_options.progress_label, bar_options.completed_label),
+        total_segments(bar_options.total_segments),
+        progress_chars(bar_options.progress_chars),
+        bracket_chars(bar_options.bracket_chars),
+        current_segments(0),
+        // options(&options) {
+        use_brackets_flag_(bar_options.has_brackets()) {
     if (total_segments <= 0) {
         throw std::invalid_argument("Total segments must be greater than 0.");
     }
@@ -53,7 +54,7 @@ void HProgressBar::redraw(bool is_final) {
     char filled_char = progress_chars[1][0];
 
     // Start bracket
-    if (options->has_brackets()) {
+    if (use_brackets_flag_) {
         std::cout << bracket_chars[0];
     }
 
@@ -66,7 +67,7 @@ void HProgressBar::redraw(bool is_final) {
     }
 
     // End bracket
-    if (options->has_brackets()) {
+    if (use_brackets_flag_) {
         std::cout << bracket_chars[1];
     }
 
