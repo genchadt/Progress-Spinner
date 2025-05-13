@@ -41,8 +41,11 @@ HProgressBarOptions::HProgressBarOptions(const option::Label& label,
       total_segments(segments.number_of_segments),
       progress_chars(progress_chars),
       bracket_chars(bracket_chars) {
-        if (progress_chars.size() < 1 || progress_chars.size() > 2) {
-            throw std::invalid_argument("HProgressBarOptions: progress_chars must have 1 or 2 elements, got " + std::to_string(progress_chars.size()));
+        if (progress_chars.size() != 2) {
+            throw std::invalid_argument("HProgressBarOptions: progress_chars must have exactly 2 elements (for empty and filled states), got " + std::to_string(progress_chars.size()));
+        }
+        if (progress_chars[0].empty() || progress_chars[1].empty()) {
+            throw std::invalid_argument("HProgressBarOptions: progress_chars cannot be empty");
         }
         if (bracket_chars.size() != 2) {
             throw std::invalid_argument("HProgressBarOptions: bracket_chars must have 2 elements, got " + std::to_string(bracket_chars.size()));
