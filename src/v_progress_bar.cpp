@@ -14,12 +14,12 @@
  */
 VProgressBar::VProgressBar(const VProgressBarOptions& options)
     : ProgressIndicator(options.progress_label, options.completed_label),
-      chars(options.chars),
-      completed(false),
-      current_percentage(0.0),
-      displayed_completed_label(false) {
-    if (chars.empty()) {
-        throw std::invalid_argument("char_frames cannot be empty.");
+        chars(options.chars),
+        completed(false),
+        current_percentage(0.0),
+        displayed_completed_label(false) {
+    if (chars.size() < 2) {
+        throw std::invalid_argument("char_frames must have exactly 2 elements (for empty and filled states), got " + std::to_string(chars.size()));
     }
     tick = 100.0 / (chars.size() - 1);
     showCursor(false);
